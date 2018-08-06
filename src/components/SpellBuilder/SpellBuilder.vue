@@ -73,8 +73,6 @@ export default {
     var playerPosX = Math.round(this.gridWidth / 2) - 1;
     var playerPosY = Math.round(this.gridHeight / 2) - 1;
     this.originNode = {x:playerPosX, y:playerPosY};
-    this.startingFrame = [{x:playerPosX, y:playerPosY}];
-    this.frames.push(this.startingFrame);
     this.loadFrame(0);
     this.displayGrid = this.grid.getFormattedGrid();
   },
@@ -99,10 +97,11 @@ export default {
 	  	this.activateNode(x - 1, y - 1);
   	},
 
-  	activateNode(x, y) {
+  	activateNode(x, y, component = 'SpellNode') {
       if(!this.grid.withinBounds(x, y)) return;
 
   		var node = this.grid.getGridValue(x,y);
+  		node.component = component;
   		if(!node.active) {
   			node.active = true;
   		}
@@ -137,7 +136,7 @@ export default {
         while(x--) {
           var node = this.grid.getGridValue(x,y);
 
-          if(node.selected) {
+          if(node.selected && node.component == 'SpellNode') {
             frame.push({x:x, y:y});
           }
         }
@@ -168,24 +167,27 @@ export default {
 
     loadFrame(frameId) {
       this.resetGrid();
-      var frame = this.frames[frameId];
+
+      var frame = this.frames[frameId] ? this.frames[frameId] : [];
       var i = frame.length;
+
       while(i--) {
         var node = frame[i];
         this.selectNode(node.x, node.y)
       }
 
       if(frameId == 0) {
-        var previousFrame = this.startingFrame;
+        this.activateNode(this.originNode.x, this.originNode.y, 'PlayerNode');
+        this.activateAroundNode(this.originNode.x, this.originNode.y);
       } else {
         var previousFrame = this.frames[frameId - 1];
-      }
 
-      i = previousFrame.length;
-      while(i--) {
-        var node = previousFrame[i];
-        this.activateNode(node.x, node.y);
-        this.activateAroundNode(node.x, node.y);
+        i = previousFrame.length;
+        while (i--) {
+          var node = previousFrame[i];
+          this.activateAroundNode(node.x, node.y);
+          this.activateNode(node.x, node.y);
+        }
       }
 
       this.currentFrame = frameId;
