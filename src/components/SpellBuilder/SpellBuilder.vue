@@ -2,7 +2,7 @@
 	<div>
 		<h1>Spell Builder!</h1>
     <div>
-      <button @click="playbackFrame(0)">Playback</button>
+      <button @click="startPlayback()">Playback</button>
     </div>
     <div>
       <button v-for="frame in frameNumbers" :key="frame"
@@ -13,9 +13,11 @@
     </div>
     <div>
       <button @click="previousFrame"
-              :disabled="currentFrame == 0">Prev Frame</button>
-      <button @click="saveFrame(currentFrame)">Save Frame</button>
-      <button @click="nextFrame">{{ currentFrame == frameCount ? 'New' : 'Next' }} Frame</button>
+              :disabled="currentFrame == 0 || playingBack">Prev Frame</button>
+      <button @click="saveFrame(currentFrame)"
+              :disabled="playingBack">Save Frame</button>
+      <button @click="nextFrame"
+              :disabled="playingBack">{{ currentFrame == frameCount ? 'New' : 'Next' }} Frame</button>
     </div>
     <div>
   		<table v-if="showGrid">
@@ -60,7 +62,8 @@ export default {
       displayGrid: [],
       currentFrame: 0,
       frameHasChanges: false,
-      frames: []
+      frames: [],
+      playingBack: false
     }
   },
   components: {
@@ -88,6 +91,7 @@ export default {
      * Should not receive these for any inactive spell nodes
      * @param x
      * @param y
+     * 
      */
     onSpellNodeClick(x, y) {
       var node = this.grid.getGridValue(x,y);
@@ -97,8 +101,11 @@ export default {
     /**
      * Activates all the nodes around a node
      * Useful when loading a new frame and need to enable all the frames around the ones selected in the previous frame
+     * stopDuringPlayback, if set to false, this will happen during playback
      */
-  	activateAroundNode(x, y) {
+  	activateAroundNode(x, y, stopDuringPlayback = true) {
+      if(this.playingBack && stopDuringPlayback) return;
+
   		this.activateNode(x + 1, y);
 	  	this.activateNode(x - 1, y);
 	  	this.activateNode(x, y + 1);
@@ -115,9 +122,11 @@ export default {
      * @param x
      * @param y
      * @param component
+     * @param stopDuringPlayback, if set to false, this will happen during playback
      */
-  	activateNode(x, y, component = 'SpellNode') {
+  	activateNode(x, y, component = 'SpellNode', stopDuringPlayback = true) {
       if(!this.grid.withinBounds(x, y)) return;
+      if(this.playingBack && stopDuringPlayback) return;
 
   		var node = this.grid.getGridValue(x,y);
   		node.component = component;
@@ -150,6 +159,7 @@ export default {
           var node = this.grid.getGridValue(x,y);
           node.active = false;
           node.selected = false;
+          node.component = 'SpellNode';
         }
         x = this.grid.width;
       }
@@ -244,7 +254,7 @@ export default {
 
       if(frameId == 0) {
         // Special case for the starting frame
-        this.activateNode(this.originNode.x, this.originNode.y, 'PlayerNode');
+        this.activateNode(this.originNode.x, this.originNode.y, 'PlayerNode', false);
         this.activateAroundNode(this.originNode.x, this.originNode.y);
       } else {
         var previousFrame = this.frames[frameId - 1];
@@ -295,20 +305,27 @@ export default {
       }
     },
 
+    startPlayback() {
+      this.playingBack = true;
+      this.playbackFrame(0);
+    },
+
     /**
      * Plays an animation of the spell
      * @param frameId
      */
     playbackFrame(frameId) {
-      this.loadFrame(frameId);
-
       if(frameId != this.frames.length - 1) {
         var self = this;
 
         setTimeout(function(){
           self.playbackFrame(self.currentFrame + 1);
         }, 1000);
+      } else {
+        this.playingBack = false;
       }
+
+      this.loadFrame(frameId);
 
     }
   },
