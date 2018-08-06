@@ -45,7 +45,7 @@
 <script>
 import Vue from 'vue'
 import Grid from '@/Domain/Grid/Grid'
-import FrameCleaner from '@/Domain/Grid/FrameCleaner'
+import FrameCleaner from '@/Domain/Frame/FrameCleaner'
 import PlayerNode from '@/components/SpellBuilder/Nodes/PlayerNode'
 import SpellNode from '@/components/SpellBuilder/Nodes/SpellNode'
 
