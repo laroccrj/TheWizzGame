@@ -38,15 +38,6 @@ export default class Grid {
 
 		return this.grid[y][x];
 	}
-	
-	getRow(y) {
-		if(y < 0 || y >= this.height) {
-			console.error('Tried to get grid row out of bounds');
-			return;
-		}
-
-		return this.grid[y];
-	}
 
 	getFormattedGrid() {
 		var grid = [];

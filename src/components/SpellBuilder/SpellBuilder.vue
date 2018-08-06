@@ -70,7 +70,7 @@ export default {
   created: function () {
     this.grid = new Grid(this.gridWidth, this.gridHeight, {component:'SpellNode', active: false, selected: false});
 
-    // Place the player in the center
+    // Place the player in the center and save the first frame as an empty frame
     var playerPosX = Math.round(this.gridWidth / 2) - 1;
     var playerPosY = Math.round(this.gridHeight / 2) - 1;
     this.originNode = {x:playerPosX, y:playerPosY};
@@ -94,6 +94,10 @@ export default {
       node.selected = !node.selected;
     },
 
+    /**
+     * Activates all the nodes around a node
+     * Useful when loading a new frame and need to enable all the frames around the ones selected in the previous frame
+     */
   	activateAroundNode(x, y) {
   		this.activateNode(x + 1, y);
 	  	this.activateNode(x - 1, y);
@@ -195,13 +199,17 @@ export default {
         this.$set(this.frames, frameId, frame);
       }
 
-      if(frameId > 0) {
-        // clean frames
-        var framesToClean = this.frames.splice(frameId);
-        var cleanFrames = FrameCleaner.cleanFrames(this.frames[frameId - 1], framesToClean);
+      // clean frames
+      if(frameId >= 0) { // no need to clean if it's a new frame
+        let cleanFrom = frameId == 0 ? frameId : frameId - 1;// Want to clean from the previous frame unless we are at the first frame
+        let spliceFrom = frameId == 0 ? 1 : frameId; // Don't splice the first frame
+
+        var framesToClean = this.frames.splice(spliceFrom);
+        var cleanFrames = FrameCleaner.cleanFrames(this.frames[cleanFrom], framesToClean);
         Array.prototype.push.apply(this.frames, cleanFrames);
       }
 
+      // If this was a save of an empty frame, this frame, and the ones after are all deleted so load the previous one
       if(frameId > this.frames.length - 1) {
         this.loadFrame(this.frames.length - 1);
       }
@@ -235,6 +243,7 @@ export default {
       }
 
       if(frameId == 0) {
+        // Special case for the starting frame
         this.activateNode(this.originNode.x, this.originNode.y, 'PlayerNode');
         this.activateAroundNode(this.originNode.x, this.originNode.y);
       } else {
