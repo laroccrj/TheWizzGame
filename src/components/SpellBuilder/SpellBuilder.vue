@@ -26,7 +26,6 @@
   										 :column="node.column"
   										 :active="node.val.active"
                        :selected="node.val.selected"
-  										 @playerNodeClick="onPlayerNodeClick"
                        @spellNodeClick="onSpellNodeClick"
   					></component>
   				</td>
@@ -70,17 +69,25 @@ export default {
   },
   created: function () {
     this.grid = new Grid(this.gridWidth, this.gridHeight, {component:'SpellNode', active: false, selected: false});
+
+    // Place the player in the center
     var playerPosX = Math.round(this.gridWidth / 2) - 1;
     var playerPosY = Math.round(this.gridHeight / 2) - 1;
     this.originNode = {x:playerPosX, y:playerPosY};
+
+    // Load initial frame and display it
     this.loadFrame(0);
     this.displayGrid = this.grid.getFormattedGrid();
   },
   methods: {
-  	onPlayerNodeClick(row, column) {
-  		this.grid.setGridValue(row, column, {component:'SpellNode', active:true});
-  	},
 
+    /**
+     * Will be received when a spell node is click
+     * Just reverse the selected property of the node
+     * Should not receive these for any inactive spell nodes
+     * @param x
+     * @param y
+     */
     onSpellNodeClick(x, y) {
       var node = this.grid.getGridValue(x,y);
       node.selected = !node.selected;
@@ -97,6 +104,13 @@ export default {
 	  	this.activateNode(x - 1, y - 1);
   	},
 
+    /**
+     * Activates a node, making it clickable
+     * Can also set the component. Defaults to spell node because right now that is the case 99% of the time
+     * @param x
+     * @param y
+     * @param component
+     */
   	activateNode(x, y, component = 'SpellNode') {
       if(!this.grid.withinBounds(x, y)) return;
 
@@ -107,12 +121,21 @@ export default {
   		}
   	},
 
+    /**
+     * Sets active and selected properties of a node to true.
+     * Causes it to be clickable and shows it as selected
+     * @param x
+     * @param y
+     */
     selectNode(x, y) {
       var node = this.grid.getGridValue(x,y);
       node.active = true;
       node.selected = true;
     },
 
+    /**
+     * Deselects all nodes and sets them to inactive
+     */
     resetGrid() {
       var x = this.grid.width;
       var y = this.grid.height;
@@ -127,6 +150,13 @@ export default {
       }
     },
 
+    /**
+     * This builds a frame from the current state of the grid
+     * Frames can be thought of as the steps of a spell
+     * The format of a frame is an array of nodes which consist of an x property and a y property
+     * ex: [{1:0},{1:2}]
+     * @returns {Array}
+     */
     getFrameFromGrid() {
       var frame = [];
       var x = this.grid.width;
@@ -146,6 +176,14 @@ export default {
       return frame;
     },
 
+    /**
+     * This saves the current grid as a frame to the list of frames
+     * If frameId is -1, it will create a new frame. If not, it will save over that frame
+     * Validity of the spell will also be checked for every frame after this one, making sure that all future frames
+     * are still possible
+     * @param frameId
+     * @returns {*}
+     */
     saveFrame(frameId) {
       var frame = this.getFrameFromGrid();
 
@@ -165,6 +203,12 @@ export default {
       return frameId;
     },
 
+    /**
+     * Resets the grid, then activates and selects nodes according to the frame
+     * Has a special case for the starting frame (id: 0) to set the origin to a player node
+     * Sets the currentFrame to the id of the frame loaded after it is done loading
+     * @param frameId
+     */
     loadFrame(frameId) {
       this.resetGrid();
 
@@ -193,11 +237,18 @@ export default {
       this.currentFrame = frameId;
     },
 
+    /**
+     * Loads the frame before the current frame
+     */
     previousFrame() {
       this.checkForChanges();
       this.loadFrame(this.currentFrame - 1);
     },
 
+    /**
+     * Loads the frame after the current frame
+     * If we are currently on the last frame, it will add a new one
+     */
     nextFrame() {
   	  this.checkForChanges();
       if(this.currentFrame != this.frames.length - 1) {
@@ -208,6 +259,10 @@ export default {
       }
     },
 
+    /**
+     * Compares the current grid to the frame that is saved currentFrame
+     * If there are differences, it asks the user if they want to save the changes
+     */
     checkForChanges() {
   	  let frame = this.frames[this.currentFrame];
   	  if(!FrameCleaner.compareFrames(this.getFrameFromGrid(), frame)) {
@@ -217,6 +272,10 @@ export default {
       }
     },
 
+    /**
+     * Plays an animation of the spell
+     * @param frameId
+     */
     playbackFrame(frameId) {
       this.loadFrame(frameId);
 
@@ -231,30 +290,15 @@ export default {
     }
   },
   computed: {
-    selectedCount() {
-      var selected = 0;
-
-      var x = this.grid.width;
-      var y = this.grid.height;
-
-      while(y--) {
-        while(x--) {
-          var node = this.grid.getGridValue(x,y);
-
-          if(node.selected) {
-            selected++;
-          }
-        }
-        x = this.grid.width;
-      }
-
-      return selected;
-    },
 
     frameCount() {
       return this.frames.length - 1;
     },
 
+    /**
+     * Gets the keys of the frame array
+     * @returns {Array}
+     */
     frameNumbers() {
       var numbers = [];
       var keys = this.frames.keys();
@@ -267,6 +311,11 @@ export default {
     },
 
     spellJSON: {
+      /**
+       * Takes the frames, sets their values relative to the origin, the outputs them as JSON
+       *
+       * @returns {string}
+       */
       get: function() {
         let relativeFrames = [];
 
@@ -289,6 +338,11 @@ export default {
 
         return JSON.stringify(relativeFrames)
       },
+      /**
+       * Takes a JSON of frames, sets their values relative to the origin, then loads the first frame into the grid
+       *
+       * @param spell
+       */
       set: function(spell) {
         let frames = [];
         let relativeFrames = JSON.parse(spell);
