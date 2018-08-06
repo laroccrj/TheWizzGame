@@ -1,10 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
-import MyComponent from '@/components/MyComponent'
+import HomePageComponent from '@/components/HomePageComponent'
 
 import SpellBuilder from '@/components/SpellBuilder/SpellBuilder'
-import NodeComponent from '@/components/SpellBuilder/NodeComponent'
 
 
 Vue.use(Router)
@@ -18,8 +17,8 @@ export default new Router({
     },
     {
     	path: '/',
-      name: 'Testing',
-      component: MyComponent
+      name: 'Home',
+      component: HomePageComponent
     },
     {
     	path:'/SpellBuilder/',
