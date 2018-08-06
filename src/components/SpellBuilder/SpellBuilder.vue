@@ -74,6 +74,7 @@ export default {
     var playerPosX = Math.round(this.gridWidth / 2) - 1;
     var playerPosY = Math.round(this.gridHeight / 2) - 1;
     this.originNode = {x:playerPosX, y:playerPosY};
+    this.frames.push([]);
 
     // Load initial frame and display it
     this.loadFrame(0);
@@ -181,6 +182,7 @@ export default {
      * If frameId is -1, it will create a new frame. If not, it will save over that frame
      * Validity of the spell will also be checked for every frame after this one, making sure that all future frames
      * are still possible
+     * If the frame is saved with no selected nodes, therefore deleted, it will load the previous node
      * @param frameId
      * @returns {*}
      */
@@ -200,6 +202,10 @@ export default {
         Array.prototype.push.apply(this.frames, cleanFrames);
       }
 
+      if(frameId > this.frames.length - 1) {
+        this.loadFrame(this.frames.length - 1);
+      }
+
       return frameId;
     },
 
@@ -211,6 +217,14 @@ export default {
      */
     loadFrame(frameId) {
       this.resetGrid();
+
+      if(frameId > this.frames.length - 1) {
+        frameId = this.frames.length - 1;
+      }
+
+      if(frameId < 0) {
+        frameId = 0;
+      }
 
       var frame = this.frames[frameId] ? this.frames[frameId] : [];
       var i = frame.length;
