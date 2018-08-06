@@ -46,10 +46,8 @@ export default class FrameCleaner {
 
 	static compareFrames(frame1, frame2) {
 		var equal = true;
-		console.log(frame1.length);
-		console.log(frame2.length);
 
-		if(frame1.length != frame2.length) equal = false;
+		if(frame1.length != frame2.length) return false;
 
 		var i = frame1.length;
 		while(i--) equal &= (frame1[i].x == frame2[i].x && frame1[i].y == frame2[i].y);

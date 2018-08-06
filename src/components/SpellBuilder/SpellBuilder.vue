@@ -188,15 +188,26 @@ export default {
     },
 
     previousFrame() {
+      this.checkForChanges();
       this.loadFrame(this.currentFrame - 1);
     },
 
     nextFrame() {
+  	  this.checkForChanges();
       if(this.currentFrame != this.frames.length - 1) {
         this.loadFrame(this.currentFrame + 1);
       } else {
         var newFrameId = this.saveFrame(-1);
         this.loadFrame(newFrameId);
+      }
+    },
+
+    checkForChanges() {
+  	  let frame = this.frames[this.currentFrame];
+  	  if(!FrameCleaner.compareFrames(this.getFrameFromGrid(), frame)) {
+  	    if(confirm("Save changes to current frame?")) {
+  	      this.saveFrame(this.currentFrame);
+        }
       }
     }
   },
