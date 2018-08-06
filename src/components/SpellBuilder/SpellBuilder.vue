@@ -72,6 +72,7 @@ export default {
     this.grid = new Grid(this.gridWidth, this.gridHeight, {component:'SpellNode', active: false, selected: false});
     var playerPosX = Math.round(this.gridWidth / 2) - 1;
     var playerPosY = Math.round(this.gridHeight / 2) - 1;
+    this.originNode = {x:playerPosX, y:playerPosY};
     this.startingFrame = [{x:playerPosX, y:playerPosY}];
     this.frames.push(this.startingFrame);
     this.loadFrame(0);
@@ -265,10 +266,50 @@ export default {
 
     spellJSON: {
       get: function() {
-        return JSON.stringify(this.frames)
+        let relativeFrames = [];
+
+        for (let i = 0; i < this.frames.length; i++) {
+          let relativeFrame = [];
+          let frame = this.frames[i];
+
+          for(let n = 0; n < frame.length; n++) {
+            let node = frame[n];
+            let relativeNode = {
+              x:node.x - this.originNode.x,
+              y:node.y - this.originNode.y
+            };
+
+            relativeFrame.push(relativeNode);
+          }
+
+          relativeFrames.push(relativeFrame);
+        }
+
+        return JSON.stringify(relativeFrames)
       },
       set: function(spell) {
-        this.frames = JSON.parse(spell);
+        let frames = [];
+        let relativeFrames = JSON.parse(spell);
+
+        for (let i = 0; i < relativeFrames.length; i++) {
+          let frame = [];
+          let relativeFrame = relativeFrames[i];
+
+          for(let n = 0; n < relativeFrame.length; n++) {
+            let relativeNode = relativeFrame[n];
+            let node = {
+              x:relativeNode.x + this.originNode.x,
+              y:relativeNode.y + this.originNode.y
+            };
+
+            frame.push(node)
+          }
+
+          frames.push(frame);
+        }
+
+        this.frames = frames;
+
         this.loadFrame(0);
       }
     }
