@@ -4,20 +4,19 @@ import HomePageComponent from '@/components/HomePageComponent'
 
 import SpellBuilder from '@/components/SpellBuilder/SpellBuilder'
 
-
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-    	path: '/',
+      path: '/',
       name: 'Home',
       component: HomePageComponent
     },
     {
-    	path:'/SpellBuilder/',
-    	name:'SpellBuilder',
-    	component: SpellBuilder
+      path: '/SpellBuilder/',
+      name: 'SpellBuilder',
+      component: SpellBuilder
     }
   ]
 })

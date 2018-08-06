@@ -14,24 +14,24 @@ export default class FrameCleaner {
    * @param frames
    * @returns {Array}
    */
-	static cleanFrames(previousFrame, frames) {
-		if(!frames || frames.length == 0) return;
+  static cleanFrames(previousFrame, frames) {
+    if (!frames || frames.length == 0) return
 
-		var newFrames = [];
+    var newFrames = []
 
-		var frame = frames.shift();
-		frame = FrameCleaner.cleanFrame(previousFrame, frame);
+    var frame = frames.shift()
+    frame = FrameCleaner.cleanFrame(previousFrame, frame)
 
-		if(frame.length > 0) {
-			newFrames.push(frame);
+    if (frame.length > 0) {
+      newFrames.push(frame)
 
-			if(frames.length > 0) {
-				Array.prototype.push.apply(newFrames, FrameCleaner.cleanFrames(frame, frames));
-			}
-		}
+      if (frames.length > 0) {
+        Array.prototype.push.apply(newFrames, FrameCleaner.cleanFrames(frame, frames))
+      }
+    }
 
-		return newFrames;
-	}
+    return newFrames
+  }
 
   /**
    * Removes any nodes that are not possible based on the previous frame
@@ -39,14 +39,13 @@ export default class FrameCleaner {
    * @param frame
    * @returns {*}
    */
-	static cleanFrame(previousFrame, frame) {
-		var i = frame.length;
+  static cleanFrame(previousFrame, frame) {
+    var i = frame.length
 
-		while(i--)
-			if(!FrameCleaner.nodePossible(previousFrame, frame[i])) frame.splice(i, 1);
+    while (i--) if (!FrameCleaner.nodePossible(previousFrame, frame[i])) frame.splice(i, 1)
 
-		return frame;
-	}
+    return frame
+  }
 
   /**
    * Checks if the node is adjacent or diagonal to any nodes from the previous frame
@@ -54,14 +53,13 @@ export default class FrameCleaner {
    * @param node
    * @returns {boolean}
    */
-	static nodePossible(previousFrame, node) {
-		var i = previousFrame.length;
+  static nodePossible(previousFrame, node) {
+    var i = previousFrame.length
 
-		while(i--)
-			if(FrameCleaner.touching(previousFrame[i], node)) return true;
+    while (i--) if (FrameCleaner.touching(previousFrame[i], node)) return true
 
-		return false;
-	}
+    return false
+  }
 
   /**
    * Checks if a node is adjacent or diagonal to another node
@@ -69,13 +67,13 @@ export default class FrameCleaner {
    * @param node2
    * @returns {boolean}
    */
-	static touching(node1, node2) {
-		if(Math.abs(node1.x - node2.x) <= 1 && Math.abs(node1.y - node2.y) <= 1) {
-			return true;
-		}
+  static touching(node1, node2) {
+    if (Math.abs(node1.x - node2.x) <= 1 && Math.abs(node1.y - node2.y) <= 1) {
+      return true
+    }
 
-		return false;
-	}
+    return false
+  }
 
   /**
    * Checks if two frames have the same nodes set
@@ -83,14 +81,14 @@ export default class FrameCleaner {
    * @param frame2
    * @returns {boolean}
    */
-	static compareFrames(frame1, frame2) {
-		var equal = true;
+  static compareFrames(frame1, frame2) {
+    var equal = true
 
-		if(frame1.length != frame2.length) return false;
+    if (frame1.length != frame2.length) return false
 
-		var i = frame1.length;
-		while(i--) equal &= (frame1[i].x == frame2[i].x && frame1[i].y == frame2[i].y);
+    var i = frame1.length
+    while (i--) equal &= frame1[i].x == frame2[i].x && frame1[i].y == frame2[i].y
 
-		return equal;
-	}
+    return equal
+  }
 }

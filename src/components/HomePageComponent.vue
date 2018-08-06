@@ -7,13 +7,10 @@
 </template>
 
 <script>
-
-	export default {
-	  name: 'HomePageComponent',
-	  data () {
-	    return {
-	    }
-	  }
-	}
-
+export default {
+  name: 'HomePageComponent',
+  data() {
+    return {}
+  }
+}
 </script>

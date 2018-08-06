@@ -51,14 +51,13 @@ import PlayerNode from '@/components/SpellBuilder/Nodes/PlayerNode'
 import SpellNode from '@/components/SpellBuilder/Nodes/SpellNode'
 
 export default {
-
   name: 'SpellBuilder',
 
-  data () {
+  data() {
     return {
-    	gridWidth: 11,
-    	gridHeight: 11,
-    	showGrid: true,
+      gridWidth: 11,
+      gridHeight: 11,
+      showGrid: true,
       displayGrid: [],
       currentFrame: 0,
       frameHasChanges: false,
@@ -70,32 +69,35 @@ export default {
     PlayerNode,
     SpellNode
   },
-  created: function () {
-    this.grid = new Grid(this.gridWidth, this.gridHeight, {component:'SpellNode', active: false, selected: false});
+  created: function() {
+    this.grid = new Grid(this.gridWidth, this.gridHeight, {
+      component: 'SpellNode',
+      active: false,
+      selected: false
+    })
 
     // Place the player in the center and save the first frame as an empty frame
-    var playerPosX = Math.round(this.gridWidth / 2) - 1;
-    var playerPosY = Math.round(this.gridHeight / 2) - 1;
-    this.originNode = {x:playerPosX, y:playerPosY};
-    this.frames.push([]);
+    var playerPosX = Math.round(this.gridWidth / 2) - 1
+    var playerPosY = Math.round(this.gridHeight / 2) - 1
+    this.originNode = { x: playerPosX, y: playerPosY }
+    this.frames.push([])
 
     // Load initial frame and display it
-    this.loadFrame(0);
-    this.displayGrid = this.grid.getFormattedGrid();
+    this.loadFrame(0)
+    this.displayGrid = this.grid.getFormattedGrid()
   },
   methods: {
-
     /**
      * Will be received when a spell node is click
      * Just reverse the selected property of the node
      * Should not receive these for any inactive spell nodes
      * @param x
      * @param y
-     * 
+     *
      */
     onSpellNodeClick(x, y) {
-      var node = this.grid.getGridValue(x,y);
-      node.selected = !node.selected;
+      var node = this.grid.getGridValue(x, y)
+      node.selected = !node.selected
     },
 
     /**
@@ -103,18 +105,18 @@ export default {
      * Useful when loading a new frame and need to enable all the frames around the ones selected in the previous frame
      * stopDuringPlayback, if set to false, this will happen during playback
      */
-  	activateAroundNode(x, y, stopDuringPlayback = true) {
-      if(this.playingBack && stopDuringPlayback) return;
+    activateAroundNode(x, y, stopDuringPlayback = true) {
+      if (this.playingBack && stopDuringPlayback) return
 
-  		this.activateNode(x + 1, y);
-	  	this.activateNode(x - 1, y);
-	  	this.activateNode(x, y + 1);
-	  	this.activateNode(x, y - 1);
-	  	this.activateNode(x + 1, y + 1);
-	  	this.activateNode(x + 1, y - 1);
-	  	this.activateNode(x - 1, y + 1);
-	  	this.activateNode(x - 1, y - 1);
-  	},
+      this.activateNode(x + 1, y)
+      this.activateNode(x - 1, y)
+      this.activateNode(x, y + 1)
+      this.activateNode(x, y - 1)
+      this.activateNode(x + 1, y + 1)
+      this.activateNode(x + 1, y - 1)
+      this.activateNode(x - 1, y + 1)
+      this.activateNode(x - 1, y - 1)
+    },
 
     /**
      * Activates a node, making it clickable
@@ -124,16 +126,16 @@ export default {
      * @param component
      * @param stopDuringPlayback, if set to false, this will happen during playback
      */
-  	activateNode(x, y, component = 'SpellNode', stopDuringPlayback = true) {
-      if(!this.grid.withinBounds(x, y)) return;
-      if(this.playingBack && stopDuringPlayback) return;
+    activateNode(x, y, component = 'SpellNode', stopDuringPlayback = true) {
+      if (!this.grid.withinBounds(x, y)) return
+      if (this.playingBack && stopDuringPlayback) return
 
-  		var node = this.grid.getGridValue(x,y);
-  		node.component = component;
-  		if(!node.active) {
-  			node.active = true;
-  		}
-  	},
+      var node = this.grid.getGridValue(x, y)
+      node.component = component
+      if (!node.active) {
+        node.active = true
+      }
+    },
 
     /**
      * Sets active and selected properties of a node to true.
@@ -142,26 +144,26 @@ export default {
      * @param y
      */
     selectNode(x, y) {
-      var node = this.grid.getGridValue(x,y);
-      node.active = true;
-      node.selected = true;
+      var node = this.grid.getGridValue(x, y)
+      node.active = true
+      node.selected = true
     },
 
     /**
      * Deselects all nodes and sets them to inactive
      */
     resetGrid() {
-      var x = this.grid.width;
-      var y = this.grid.height;
+      var x = this.grid.width
+      var y = this.grid.height
 
-      while(y--) {
-        while(x--) {
-          var node = this.grid.getGridValue(x,y);
-          node.active = false;
-          node.selected = false;
-          node.component = 'SpellNode';
+      while (y--) {
+        while (x--) {
+          var node = this.grid.getGridValue(x, y)
+          node.active = false
+          node.selected = false
+          node.component = 'SpellNode'
         }
-        x = this.grid.width;
+        x = this.grid.width
       }
     },
 
@@ -173,22 +175,22 @@ export default {
      * @returns {Array}
      */
     getFrameFromGrid() {
-      var frame = [];
-      var x = this.grid.width;
-      var y = this.grid.height;
+      var frame = []
+      var x = this.grid.width
+      var y = this.grid.height
 
-      while(y--) {
-        while(x--) {
-          var node = this.grid.getGridValue(x,y);
+      while (y--) {
+        while (x--) {
+          var node = this.grid.getGridValue(x, y)
 
-          if(node.selected && node.component == 'SpellNode') {
-            frame.push({x:x, y:y});
+          if (node.selected && node.component == 'SpellNode') {
+            frame.push({ x: x, y: y })
           }
         }
-        x = this.grid.width;
+        x = this.grid.width
       }
 
-      return frame;
+      return frame
     },
 
     /**
@@ -201,30 +203,31 @@ export default {
      * @returns {*}
      */
     saveFrame(frameId) {
-      var frame = this.getFrameFromGrid();
+      var frame = this.getFrameFromGrid()
 
-      if(frameId == -1) {
-        frameId = this.frames.push(frame) - 1;
+      if (frameId == -1) {
+        frameId = this.frames.push(frame) - 1
       } else {
-        this.$set(this.frames, frameId, frame);
+        this.$set(this.frames, frameId, frame)
       }
 
       // clean frames
-      if(frameId >= 0) { // no need to clean if it's a new frame
-        let cleanFrom = frameId == 0 ? frameId : frameId - 1;// Want to clean from the previous frame unless we are at the first frame
-        let spliceFrom = frameId == 0 ? 1 : frameId; // Don't splice the first frame
+      if (frameId >= 0) {
+        // no need to clean if it's a new frame
+        let cleanFrom = frameId == 0 ? frameId : frameId - 1 // Want to clean from the previous frame unless we are at the first frame
+        let spliceFrom = frameId == 0 ? 1 : frameId // Don't splice the first frame
 
-        var framesToClean = this.frames.splice(spliceFrom);
-        var cleanFrames = FrameCleaner.cleanFrames(this.frames[cleanFrom], framesToClean);
-        Array.prototype.push.apply(this.frames, cleanFrames);
+        var framesToClean = this.frames.splice(spliceFrom)
+        var cleanFrames = FrameCleaner.cleanFrames(this.frames[cleanFrom], framesToClean)
+        Array.prototype.push.apply(this.frames, cleanFrames)
       }
 
       // If this was a save of an empty frame, this frame, and the ones after are all deleted so load the previous one
-      if(frameId > this.frames.length - 1) {
-        this.loadFrame(this.frames.length - 1);
+      if (frameId > this.frames.length - 1) {
+        this.loadFrame(this.frames.length - 1)
       }
 
-      return frameId;
+      return frameId
     },
 
     /**
@@ -234,48 +237,48 @@ export default {
      * @param frameId
      */
     loadFrame(frameId) {
-      this.resetGrid();
+      this.resetGrid()
 
-      if(frameId > this.frames.length - 1) {
-        frameId = this.frames.length - 1;
+      if (frameId > this.frames.length - 1) {
+        frameId = this.frames.length - 1
       }
 
-      if(frameId < 0) {
-        frameId = 0;
+      if (frameId < 0) {
+        frameId = 0
       }
 
-      var frame = this.frames[frameId] ? this.frames[frameId] : [];
-      var i = frame.length;
+      var frame = this.frames[frameId] ? this.frames[frameId] : []
+      var i = frame.length
 
-      while(i--) {
-        var node = frame[i];
+      while (i--) {
+        var node = frame[i]
         this.selectNode(node.x, node.y)
       }
 
-      if(frameId == 0) {
+      if (frameId == 0) {
         // Special case for the starting frame
-        this.activateNode(this.originNode.x, this.originNode.y, 'PlayerNode', false);
-        this.activateAroundNode(this.originNode.x, this.originNode.y);
+        this.activateNode(this.originNode.x, this.originNode.y, 'PlayerNode', false)
+        this.activateAroundNode(this.originNode.x, this.originNode.y)
       } else {
-        var previousFrame = this.frames[frameId - 1];
+        var previousFrame = this.frames[frameId - 1]
 
-        i = previousFrame.length;
+        i = previousFrame.length
         while (i--) {
-          var node = previousFrame[i];
-          this.activateAroundNode(node.x, node.y);
-          this.activateNode(node.x, node.y);
+          var node = previousFrame[i]
+          this.activateAroundNode(node.x, node.y)
+          this.activateNode(node.x, node.y)
         }
       }
 
-      this.currentFrame = frameId;
+      this.currentFrame = frameId
     },
 
     /**
      * Loads the frame before the current frame
      */
     previousFrame() {
-      this.checkForChanges();
-      this.loadFrame(this.currentFrame - 1);
+      this.checkForChanges()
+      this.loadFrame(this.currentFrame - 1)
     },
 
     /**
@@ -283,12 +286,12 @@ export default {
      * If we are currently on the last frame, it will add a new one
      */
     nextFrame() {
-  	  this.checkForChanges();
-      if(this.currentFrame != this.frames.length - 1) {
-        this.loadFrame(this.currentFrame + 1);
+      this.checkForChanges()
+      if (this.currentFrame != this.frames.length - 1) {
+        this.loadFrame(this.currentFrame + 1)
       } else {
-        var newFrameId = this.saveFrame(-1);
-        this.loadFrame(newFrameId);
+        var newFrameId = this.saveFrame(-1)
+        this.loadFrame(newFrameId)
       }
     },
 
@@ -297,17 +300,17 @@ export default {
      * If there are differences, it asks the user if they want to save the changes
      */
     checkForChanges() {
-  	  let frame = this.frames[this.currentFrame];
-  	  if(!FrameCleaner.compareFrames(this.getFrameFromGrid(), frame)) {
-  	    if(confirm("Save changes to current frame?")) {
-  	      this.saveFrame(this.currentFrame);
+      let frame = this.frames[this.currentFrame]
+      if (!FrameCleaner.compareFrames(this.getFrameFromGrid(), frame)) {
+        if (confirm('Save changes to current frame?')) {
+          this.saveFrame(this.currentFrame)
         }
       }
     },
 
     startPlayback() {
-      this.playingBack = true;
-      this.playbackFrame(0);
+      this.playingBack = true
+      this.playbackFrame(0)
     },
 
     /**
@@ -315,24 +318,22 @@ export default {
      * @param frameId
      */
     playbackFrame(frameId) {
-      if(frameId != this.frames.length - 1) {
-        var self = this;
+      if (frameId != this.frames.length - 1) {
+        var self = this
 
-        setTimeout(function(){
-          self.playbackFrame(self.currentFrame + 1);
-        }, 1000);
+        setTimeout(function() {
+          self.playbackFrame(self.currentFrame + 1)
+        }, 1000)
       } else {
-        this.playingBack = false;
+        this.playingBack = false
       }
 
-      this.loadFrame(frameId);
-
+      this.loadFrame(frameId)
     }
   },
   computed: {
-
     frameCount() {
-      return this.frames.length - 1;
+      return this.frames.length - 1
     },
 
     /**
@@ -340,14 +341,14 @@ export default {
      * @returns {Array}
      */
     frameNumbers() {
-      var numbers = [];
-      var keys = this.frames.keys();
+      var numbers = []
+      var keys = this.frames.keys()
 
-      for(let key of keys) {
-        numbers.push(key);
+      for (let key of keys) {
+        numbers.push(key)
       }
 
-      return numbers;
+      return numbers
     },
 
     spellJSON: {
@@ -357,23 +358,23 @@ export default {
        * @returns {string}
        */
       get: function() {
-        let relativeFrames = [];
+        let relativeFrames = []
 
         for (let i = 0; i < this.frames.length; i++) {
-          let relativeFrame = [];
-          let frame = this.frames[i];
+          let relativeFrame = []
+          let frame = this.frames[i]
 
-          for(let n = 0; n < frame.length; n++) {
-            let node = frame[n];
+          for (let n = 0; n < frame.length; n++) {
+            let node = frame[n]
             let relativeNode = {
-              x:node.x - this.originNode.x,
-              y:node.y - this.originNode.y
-            };
+              x: node.x - this.originNode.x,
+              y: node.y - this.originNode.y
+            }
 
-            relativeFrame.push(relativeNode);
+            relativeFrame.push(relativeNode)
           }
 
-          relativeFrames.push(relativeFrame);
+          relativeFrames.push(relativeFrame)
         }
 
         return JSON.stringify(relativeFrames)
@@ -384,29 +385,29 @@ export default {
        * @param spell
        */
       set: function(spell) {
-        let frames = [];
-        let relativeFrames = JSON.parse(spell);
+        let frames = []
+        let relativeFrames = JSON.parse(spell)
 
         for (let i = 0; i < relativeFrames.length; i++) {
-          let frame = [];
-          let relativeFrame = relativeFrames[i];
+          let frame = []
+          let relativeFrame = relativeFrames[i]
 
-          for(let n = 0; n < relativeFrame.length; n++) {
-            let relativeNode = relativeFrame[n];
+          for (let n = 0; n < relativeFrame.length; n++) {
+            let relativeNode = relativeFrame[n]
             let node = {
-              x:relativeNode.x + this.originNode.x,
-              y:relativeNode.y + this.originNode.y
-            };
+              x: relativeNode.x + this.originNode.x,
+              y: relativeNode.y + this.originNode.y
+            }
 
             frame.push(node)
           }
 
-          frames.push(frame);
+          frames.push(frame)
         }
 
-        this.frames = frames;
+        this.frames = frames
 
-        this.loadFrame(0);
+        this.loadFrame(0)
       }
     }
   }
@@ -414,12 +415,12 @@ export default {
 </script>
 
 <style lang="css" scoped>
-  .spellLoader {
-    width:100%;
-    height:200px;
-  }
-  .selectedFrame {
-    background-color: green;
-    color:white;
-  }
+.spellLoader {
+  width: 100%;
+  height: 200px;
+}
+.selectedFrame {
+  background-color: green;
+  color: white;
+}
 </style>

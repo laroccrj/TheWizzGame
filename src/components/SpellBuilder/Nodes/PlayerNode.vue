@@ -4,22 +4,19 @@
 
 <script>
 export default {
-
   name: 'PlayerNode',
 
-  data () {
-    return {
-
-    }
+  data() {
+    return {}
   },
   props: {
-  	row: Number,
-  	column: Number
+    row: Number,
+    column: Number
   },
   methods: {
-  	selected: function() {
-  		this.$emit('playerNodeClick', this.row, this.column)
-  	}
+    selected: function() {
+      this.$emit('playerNodeClick', this.row, this.column)
+    }
   }
 }
 </script>
