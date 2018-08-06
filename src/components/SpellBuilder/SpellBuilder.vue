@@ -2,6 +2,9 @@
 	<div>
 		<h1>Spell Builder!</h1>
     <div>
+      <button @click="playbackFrame(0)">Playback</button>
+    </div>
+    <div>
       <button v-for="frame in frameNumbers" :key="frame"
               :class="{selectedFrame: frame == currentFrame}"
               @click="loadFrame(frame)">
@@ -209,6 +212,19 @@ export default {
   	      this.saveFrame(this.currentFrame);
         }
       }
+    },
+
+    playbackFrame(frameId) {
+      this.loadFrame(frameId);
+
+      if(frameId != this.frames.length - 1) {
+        var self = this;
+
+        setTimeout(function(){
+          self.playbackFrame(self.currentFrame + 1);
+        }, 1000);
+      }
+
     }
   },
   computed: {
