@@ -6,15 +6,12 @@
 
 <script>
 export default {
+	name: "Game",
 
-  name: 'Game',
-
-  data () {
-    return {
-
-    }
-  }
-}
+	data() {
+		return {};
+	}
+};
 </script>
 
 <style lang="css" scoped>
