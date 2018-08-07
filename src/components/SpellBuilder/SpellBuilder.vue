@@ -23,7 +23,7 @@
       <grid ref="grid"
             :rows=11
             :columns=11
-            defaultComponent="SpellNode"
+            defaultComponent="SpellBuilderSpellNode"
             :defaultOptions="{active:false, selected: false}"
             @onNodeEvent="onNodeEvent">
       </grid>
@@ -46,8 +46,6 @@ import Vue from 'vue'
 import VueClipboard from 'vue-clipboard2'
 import Grid from '@/components/Grid'
 import FrameCleaner from '@/Domain/Frame/FrameCleaner'
-import PlayerNode from '@/components/SpellBuilder/Nodes/PlayerNode'
-import SpellNode from '@/components/SpellBuilder/Nodes/SpellNode'
 
 Vue.use(VueClipboard)
 
@@ -67,8 +65,6 @@ export default {
     }
   },
   components: {
-    PlayerNode,
-    SpellNode,
     Grid
   },
   mounted: function() {
@@ -94,7 +90,7 @@ export default {
     onNodeEvent(event, x, y) {
       var node = this.$refs.grid.getGridValue(x, y);
 
-      if(node.component === 'SpellNode') {
+      if(node.component === 'SpellBuilderSpellNode') {
         if(event === 'click'){
           node.selected = !node.selected;
         }
@@ -127,7 +123,7 @@ export default {
      * @param component
      * @param stopDuringPlayback, if set to false, this will happen during playback
      */
-    activateNode(x, y, component = 'SpellNode', stopDuringPlayback = true) {
+    activateNode(x, y, component = 'SpellBuilderSpellNode', stopDuringPlayback = true) {
       if (!this.$refs.grid.withinBounds(x, y)) return
       if (this.playingBack && stopDuringPlayback) return
 
@@ -163,7 +159,7 @@ export default {
           var node = this.$refs.grid.getGridValue(x, y)
           node.active = false
           node.selected = false
-          node.component = 'SpellNode'
+          node.component = 'SpellBuilderSpellNode'
         }
         x = this.$refs.grid.columns
       }
@@ -185,7 +181,7 @@ export default {
         while (x--) {
           var node = this.$refs.grid.getGridValue(x, y)
 
-          if (node.selected && node.component == 'SpellNode') {
+          if (node.selected && node.component == 'SpellBuilderSpellNode') {
             frame.push({ x: x, y: y })
           }
         }
@@ -259,7 +255,7 @@ export default {
 
       if (frameId == 0) {
         // Special case for the starting frame
-        this.activateNode(this.originNode.x, this.originNode.y, 'PlayerNode', false)
+        this.activateNode(this.originNode.x, this.originNode.y, 'SpellBuilderPlayerNode', false)
         this.activateAroundNode(this.originNode.x, this.originNode.y)
       } else {
         let previousFrame = this.frames[frameId - 1]

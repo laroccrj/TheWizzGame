@@ -9,7 +9,7 @@
 import NodeComponent from '@/components/NodeComponent'
 export default {
   extends:NodeComponent,
-  name: 'SpellNode',
+  name: 'SpellBuilderSpellNode',
   data() {
     return {}
   },

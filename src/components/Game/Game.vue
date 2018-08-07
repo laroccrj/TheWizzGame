@@ -6,7 +6,9 @@
 		<div>
 			<grid ref="grid"
 						:rows=11
-						:columns=11>
+						:columns=11
+						defaultComponent="GamePlayerNode"
+			>
 			</grid>
 		</div>
 	</div>

@@ -16,8 +16,9 @@
 <script>
 
 import Vue from 'vue'
-import SpellNode from '@/components/SpellBuilder/Nodes/SpellNode'
-import PlayerNode from '@/components/SpellBuilder/Nodes/PlayerNode'
+import SpellBuilderSpellNode from '@/components/SpellBuilder/Nodes/SpellBuilderSpellNode'
+import SpellBuilderPlayerNode from '@/components/SpellBuilder/Nodes/SpellBuilderPlayerNode'
+import GamePlayerNode from '@/components/Game/Nodes/GamePlayerNode'
 import NodeComponent from './NodeComponent'
 import Utils from '@/Domain/Utils'
 
@@ -57,9 +58,10 @@ export default {
 	},
 	// Needs to include all possible nodes
 	components: {
-		SpellNode,
+    SpellBuilderSpellNode,
 		NodeComponent,
-		PlayerNode
+    SpellBuilderPlayerNode,
+		GamePlayerNode
 	},
 	methods: {
     onNodeEvent(event, row, column) {
