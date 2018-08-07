@@ -32,7 +32,10 @@ export default {
 	props: {
 		rows: Number,
 		columns: Number,
-		defaultComponent: String,
+		defaultComponent: {
+		  type: String,
+			default: "NodeComponent"
+		},
 		defaultOptions: Object,
 	},
 	created: function() {
