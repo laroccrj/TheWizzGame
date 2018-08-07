@@ -1,27 +1,18 @@
 <template>
-	<button :class="{ inactive: !active, selected: selected }"
-					:disabled="active == false"
-					@click="onClick"
+	<button :class="{ inactive: !options.active, selected: options.selected }"
+					:disabled="options.active == false"
+					@click="onNodeEvent('click')"
 	>-</button>
 </template>
 
 <script>
+import NodeComponent from '@/components/NodeComponent'
 export default {
+  extends:NodeComponent,
   name: 'SpellNode',
-  props: {
-    row: Number,
-    column: Number,
-    active: Boolean,
-    selected: Boolean
-  },
   data() {
     return {}
   },
-  methods: {
-    onClick: function() {
-      this.$emit('spellNodeClick', this.column, this.row)
-    }
-  }
 }
 </script>
 
