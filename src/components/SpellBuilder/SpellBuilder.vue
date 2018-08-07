@@ -39,7 +39,10 @@
     </div>
     <div>
       <textarea v-model="spellJSON" class='spellLoader'></textarea>
-      <button type="button" v-clipboard:copy="spellJSON">Copy!</button>
+      <button type="button"
+        v-clipboard:copy="spellJSON"
+        v-clipboard:success="() => showAlert('Copied spell to clipboard')"
+        v-clipboard:error="() => showAlert('Error copying spell to clipboard')">Copy Spell to Clipboard</button>
     </div>
 	</div>
 </template>
@@ -333,6 +336,15 @@ export default {
       }
 
       this.loadFrame(frameId)
+    },
+
+    /**
+     * Shows a toast-style alert with the specified text
+     * @param text
+     */
+    showAlert(text) {
+      // Meh. This is a problem for when we feel like designing
+      alert(text)
     }
   },
   computed: {
