@@ -16,7 +16,6 @@
 <script>
 
 import Vue from 'vue'
-import Grid from '@/Domain/Grid/Grid'
 import SpellNode from '@/components/SpellBuilder/Nodes/SpellNode'
 import PlayerNode from '@/components/SpellBuilder/Nodes/PlayerNode'
 import NodeComponent from './NodeComponent'
