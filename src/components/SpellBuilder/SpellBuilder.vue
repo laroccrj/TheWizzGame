@@ -49,13 +49,10 @@
 
 <script>
 import Vue from 'vue'
-import VueClipboard from 'vue-clipboard2'
 import Grid from '@/Domain/Grid/Grid'
 import FrameCleaner from '@/Domain/Frame/FrameCleaner'
 import PlayerNode from '@/components/SpellBuilder/Nodes/PlayerNode'
 import SpellNode from '@/components/SpellBuilder/Nodes/SpellNode'
-
-Vue.use(VueClipboard)
 
 export default {
   name: 'SpellBuilder',
