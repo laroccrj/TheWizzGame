@@ -39,16 +39,23 @@
     </div>
     <div>
       <textarea v-model="spellJSON" class='spellLoader'></textarea>
+      <button type="button"
+        v-clipboard:copy="spellJSON"
+        v-clipboard:success="() => showAlert('Copied spell to clipboard')"
+        v-clipboard:error="() => showAlert('Error copying spell to clipboard')">Copy Spell to Clipboard</button>
     </div>
 	</div>
 </template>
 
 <script>
 import Vue from 'vue'
+import VueClipboard from 'vue-clipboard2'
 import Grid from '@/Domain/Grid/Grid'
 import FrameCleaner from '@/Domain/Frame/FrameCleaner'
 import PlayerNode from '@/components/SpellBuilder/Nodes/PlayerNode'
 import SpellNode from '@/components/SpellBuilder/Nodes/SpellNode'
+
+Vue.use(VueClipboard)
 
 export default {
   name: 'SpellBuilder',
@@ -329,6 +336,15 @@ export default {
       }
 
       this.loadFrame(frameId)
+    },
+
+    /**
+     * Shows a toast-style alert with the specified text
+     * @param text
+     */
+    showAlert(text) {
+      // Meh. This is a problem for when we feel like designing
+      alert(text)
     }
   },
   computed: {
