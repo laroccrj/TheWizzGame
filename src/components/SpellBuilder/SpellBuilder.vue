@@ -25,7 +25,7 @@
             :columns=11
             defaultComponent="SpellNode"
             :defaultOptions="{active:false, selected: false}"
-            @onNodeClick="onNodeClick">
+            @onNodeEvent="onNodeEvent">
       </grid>
     </div>
     <div>
@@ -86,13 +86,19 @@ export default {
      * Will be received when a spell node is click
      * Just reverse the selected property of the node
      * Should not receive these for any inactive spell nodes
+     * @param event
      * @param x
      * @param y
      *
      */
-    onNodeClick(x, y) {
+    onNodeEvent(event, x, y) {
       var node = this.$refs.grid.getGridValue(x, y);
-      node.selected = !node.selected;
+
+      if(node.component === 'SpellNode') {
+        if(event === 'click'){
+          node.selected = !node.selected;
+        }
+      }
     },
 
     /**

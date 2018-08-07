@@ -14,8 +14,8 @@
       return {}
     },
     methods: {
-      onNodeClick: function () {
-        this.$emit('onNodeClick', this.column, this.row)
+      onNodeEvent: function (event) {
+        this.$emit('onNodeEvent', event, this.column, this.row)
       }
     }
   }

@@ -6,7 +6,7 @@
 									 :row="node.row"
 									 :column="node.column"
 									 :options="node.val"
-									 @onNodeClick="onNodeClick"
+									 @onNodeEvent="onNodeEvent"
 				></component>
 			</td>
 		</tr>
@@ -59,8 +59,8 @@ export default {
 		PlayerNode
 	},
 	methods: {
-    onNodeClick(row, column) {
-      this.$emit('onNodeClick', row, column);
+    onNodeEvent(event, row, column) {
+      this.$emit('onNodeEvent', event, row, column);
     },
 
     setGridValue(x, y, value) {

@@ -1,7 +1,7 @@
 <template>
 	<button :class="{ inactive: !options.active, selected: options.selected }"
 					:disabled="options.active == false"
-					@click="onNodeClick"
+					@click="onNodeEvent('click')"
 	>-</button>
 </template>
 
