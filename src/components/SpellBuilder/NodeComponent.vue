@@ -5,6 +5,6 @@
 <script>
 export default {
   name: 'spell-creator-node',
-  props: {msg: String}
+  props: { msg: String }
 }
 </script>
