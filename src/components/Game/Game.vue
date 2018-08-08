@@ -3,7 +3,7 @@
 		<div>
 			<h1>Game Time</h1>
 		</div>
-		<div><button @click="castSpell(spellJSON)">Cast Spell</button></div>
+		<div><button @click="castSpell(spell)">Cast Spell</button></div>
 		<div><button @click='rotateLeft'>Rotate Left</button><button @click='moveForward'>Move Forward</button><button @click='rotateRight'>Rotate Right</button></div>
 		<div>
 			<grid ref="grid"
@@ -20,7 +20,9 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import Grid from '@/components/Grid'
+import SpellInstance from '@/Domain/Game/SpellInstance'
 
 export default {
 	name: 'Game',
@@ -33,7 +35,9 @@ export default {
 			},
 			playerPositionX: 0,
 			playerPositionY: 5,
-			spell:[]
+			spell:[],
+			spellInstances: [],
+			currentSpellNodes: []
 		}
 	},
 	components: {
@@ -45,6 +49,27 @@ export default {
 	methods: {
 		updatePlayer() {
 			this.$refs.grid.setGridValue(this.playerPositionX, this.playerPositionY, this.playerNode)
+		},
+		nextTurn() {
+      this.clearSpellNodes();
+			let i = this.spellInstances.length;
+			while(i--) {
+			  let spellInstance = this.spellInstances[i]
+			  this.drawSpellFrame(spellInstance)
+			}
+		},
+		clearSpellNodes() {
+      let i = this.currentSpellNodes.length;
+      console.log(this.currentSpellNodes);
+
+      while(i--) {
+        let spellNode = this.currentSpellNodes[i]
+				console.log(spellNode.y)
+        this.$refs.grid.setGridValue(spellNode.x, spellNode.y, 'GameFieldNode')
+      }
+
+      this.currentSpellNodes.splice(0);
+      console.log(this.currentSpellNodes);
 		},
 		rotateRight() {
 			switch (this.playerNode.facing) {
@@ -89,9 +114,6 @@ export default {
 			this.updatePlayer()
 		},
 		moveForward() {
-			let changeY = 0
-			let changeX = 0
-
 			switch (this.playerNode.facing) {
 				case 'left':
 					this.movePlayer(-1, 0)
@@ -123,8 +145,29 @@ export default {
 			this.updatePlayer()
 		},
 		castSpell(frames) {
-		  console.log(frames)
+		  let spellInstance = new SpellInstance(this.playerPositionX, this.playerPositionY, frames);
+			this.spellInstances.push(spellInstance);
+			this.nextTurn();
 		},
+		drawSpellFrame(spellInstance) {
+		  let frame = spellInstance.getNextFrame()
+		  let i = frame.length;
+		  while(i--) {
+		    let spellNode = frame[i];
+		    let x = spellNode.x + spellInstance.originX
+				let y = spellNode.y + spellInstance.originY
+
+        this.$refs.grid.setGridValue(
+          x,
+					y,
+					{
+          	component: 'GameSpellNode'
+          }
+				)
+
+				this.currentSpellNodes.push({x:x, y:y});
+			}
+		}
 	},
   computed: {
 		spellJSON: {

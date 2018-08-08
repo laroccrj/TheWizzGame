@@ -19,6 +19,7 @@ import SpellBuilderSpellNode from '@/components/SpellBuilder/Nodes/SpellBuilderS
 import SpellBuilderPlayerNode from '@/components/SpellBuilder/Nodes/SpellBuilderPlayerNode'
 import GamePlayerNode from '@/components/Game/Nodes/GamePlayerNode'
 import GameFieldNode from '@/components/Game/Nodes/GameFieldNode'
+import GameSpellNode from '@/components/Game/Nodes/GameSpellNode'
 import NodeComponent from './NodeComponent'
 import Utils from '@/Domain/Utils'
 
@@ -62,7 +63,8 @@ export default {
     NodeComponent,
     SpellBuilderPlayerNode,
     GamePlayerNode,
-    GameFieldNode
+    GameFieldNode,
+    GameSpellNode
   },
   methods: {
     onNodeEvent(event, row, column) {

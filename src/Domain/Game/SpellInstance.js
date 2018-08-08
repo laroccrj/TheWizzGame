@@ -12,6 +12,6 @@ export default class SpellInstance {
 
   getNextFrame() {
     if(this.frames.length <= this.currentFrame) return [];
-    return this.frames[++this.currentFrame];
+    return this.frames[this.currentFrame++];
   }
 }
