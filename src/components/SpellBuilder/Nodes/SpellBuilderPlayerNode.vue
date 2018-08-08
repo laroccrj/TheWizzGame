@@ -1,10 +1,10 @@
 <template>
-	<span @click="selected">P</span>
+	<span>P</span>
 </template>
 
 <script>
 export default {
-  name: 'PlayerNode',
+  name: 'SpellBuilderPlayerNode',
 
   data() {
     return {}
@@ -12,11 +12,6 @@ export default {
   props: {
     row: Number,
     column: Number
-  },
-  methods: {
-    selected: function() {
-      this.$emit('playerNodeClick', this.row, this.column)
-    }
   }
 }
 </script>

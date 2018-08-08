@@ -20,19 +20,13 @@
               :disabled="playingBack">{{ currentFrame == frameCount ? 'New' : 'Next' }} Frame</button>
     </div>
     <div>
-  		<table v-if="showGrid">
-  			<tr v-for="row in displayGrid">
-  				<td v-for="node in row.columns">
-  					<component :is="node.val.component"
-  										 :row="node.row"
-  										 :column="node.column"
-  										 :active="node.val.active"
-                       :selected="node.val.selected"
-                       @spellNodeClick="onSpellNodeClick"
-  					></component>
-  				</td>
-    		</tr>
-  		</table>
+      <grid ref="grid"
+            :rows=11
+            :columns=11
+            defaultComponent="SpellBuilderSpellNode"
+            :defaultOptions="{active:false, selected: false}"
+            @onNodeEvent="onNodeEvent">
+      </grid>
     </div>
     <div>
       Current frame: {{currentFrame}}
@@ -50,10 +44,8 @@
 <script>
 import Vue from 'vue'
 import VueClipboard from 'vue-clipboard2'
-import Grid from '@/Domain/Grid/Grid'
+import Grid from '@/components/Grid'
 import FrameCleaner from '@/Domain/Frame/FrameCleaner'
-import PlayerNode from '@/components/SpellBuilder/Nodes/PlayerNode'
-import SpellNode from '@/components/SpellBuilder/Nodes/SpellNode'
 
 Vue.use(VueClipboard)
 
@@ -73,38 +65,36 @@ export default {
     }
   },
   components: {
-    PlayerNode,
-    SpellNode
+    Grid
   },
-  created: function() {
-    this.grid = new Grid(this.gridWidth, this.gridHeight, {
-      component: 'SpellNode',
-      active: false,
-      selected: false
-    })
-
+  mounted: function() {
     // Place the player in the center and save the first frame as an empty frame
-    var playerPosX = Math.round(this.gridWidth / 2) - 1
-    var playerPosY = Math.round(this.gridHeight / 2) - 1
-    this.originNode = { x: playerPosX, y: playerPosY }
-    this.frames.push([])
+    var playerPosX = Math.round(this.gridWidth / 2) - 1;
+    var playerPosY = Math.round(this.gridHeight / 2) - 1;
+    this.originNode = { x: playerPosX, y: playerPosY };
+    this.frames.push([]);
 
     // Load initial frame and display it
-    this.loadFrame(0)
-    this.displayGrid = this.grid.getFormattedGrid()
+    this.loadFrame(0);
   },
   methods: {
     /**
      * Will be received when a spell node is click
      * Just reverse the selected property of the node
      * Should not receive these for any inactive spell nodes
+     * @param event
      * @param x
      * @param y
      *
      */
-    onSpellNodeClick(x, y) {
-      var node = this.grid.getGridValue(x, y)
-      node.selected = !node.selected
+    onNodeEvent(event, x, y) {
+      var node = this.$refs.grid.getGridValue(x, y);
+
+      if(node.component === 'SpellBuilderSpellNode') {
+        if(event === 'click'){
+          node.selected = !node.selected;
+        }
+      }
     },
 
     /**
@@ -133,15 +123,16 @@ export default {
      * @param component
      * @param stopDuringPlayback, if set to false, this will happen during playback
      */
-    activateNode(x, y, component = 'SpellNode', stopDuringPlayback = true) {
-      if (!this.grid.withinBounds(x, y)) return
+    activateNode(x, y, component = 'SpellBuilderSpellNode', stopDuringPlayback = true) {
+      if (!this.$refs.grid.withinBounds(x, y)) return
       if (this.playingBack && stopDuringPlayback) return
 
-      var node = this.grid.getGridValue(x, y)
+      let node = this.$refs.grid.getGridValue(x, y)
       node.component = component
       if (!node.active) {
         node.active = true
       }
+      this.$refs.grid.setGridValue(x,y, node);
     },
 
     /**
@@ -151,7 +142,7 @@ export default {
      * @param y
      */
     selectNode(x, y) {
-      var node = this.grid.getGridValue(x, y)
+      var node = this.$refs.grid.getGridValue(x, y)
       node.active = true
       node.selected = true
     },
@@ -160,17 +151,17 @@ export default {
      * Deselects all nodes and sets them to inactive
      */
     resetGrid() {
-      var x = this.grid.width
-      var y = this.grid.height
+      var x = this.$refs.grid.columns
+      var y = this.$refs.grid.rows
 
       while (y--) {
         while (x--) {
-          var node = this.grid.getGridValue(x, y)
+          var node = this.$refs.grid.getGridValue(x, y)
           node.active = false
           node.selected = false
-          node.component = 'SpellNode'
+          node.component = 'SpellBuilderSpellNode'
         }
-        x = this.grid.width
+        x = this.$refs.grid.columns
       }
     },
 
@@ -183,18 +174,18 @@ export default {
      */
     getFrameFromGrid() {
       var frame = []
-      var x = this.grid.width
-      var y = this.grid.height
+      var x = this.$refs.grid.columns
+      var y = this.$refs.grid.rows
 
       while (y--) {
         while (x--) {
-          var node = this.grid.getGridValue(x, y)
+          var node = this.$refs.grid.getGridValue(x, y)
 
-          if (node.selected && node.component == 'SpellNode') {
+          if (node.selected && node.component == 'SpellBuilderSpellNode') {
             frame.push({ x: x, y: y })
           }
         }
-        x = this.grid.width
+        x = this.$refs.grid.columns
       }
 
       return frame
@@ -244,7 +235,7 @@ export default {
      * @param frameId
      */
     loadFrame(frameId) {
-      this.resetGrid()
+      this.resetGrid();
 
       if (frameId > this.frames.length - 1) {
         frameId = this.frames.length - 1
@@ -254,24 +245,24 @@ export default {
         frameId = 0
       }
 
-      var frame = this.frames[frameId] ? this.frames[frameId] : []
-      var i = frame.length
+      let frame = this.frames[frameId] ? this.frames[frameId] : []
+      let i = frame.length
 
       while (i--) {
-        var node = frame[i]
+        let node = frame[i]
         this.selectNode(node.x, node.y)
       }
 
       if (frameId == 0) {
         // Special case for the starting frame
-        this.activateNode(this.originNode.x, this.originNode.y, 'PlayerNode', false)
+        this.activateNode(this.originNode.x, this.originNode.y, 'SpellBuilderPlayerNode', false)
         this.activateAroundNode(this.originNode.x, this.originNode.y)
       } else {
-        var previousFrame = this.frames[frameId - 1]
+        let previousFrame = this.frames[frameId - 1]
 
         i = previousFrame.length
         while (i--) {
-          var node = previousFrame[i]
+          let node = previousFrame[i]
           this.activateAroundNode(node.x, node.y)
           this.activateNode(node.x, node.y)
         }
