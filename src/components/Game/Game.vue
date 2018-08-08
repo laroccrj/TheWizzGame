@@ -3,6 +3,7 @@
 		<div>
 			<h1>Game Time</h1>
 		</div>
+		<div><button @click="castSpell(spellJSON)">Cast Spell</button></div>
 		<div><button @click='rotateLeft'>Rotate Left</button><button @click='moveForward'>Move Forward</button><button @click='rotateRight'>Rotate Right</button></div>
 		<div>
 			<grid ref="grid"
@@ -11,6 +12,9 @@
 						defaultComponent="GameFieldNode"
 			>
 			</grid>
+		</div>
+		<div>
+			<textarea v-model="spellJSON" class='spellLoader'></textarea>
 		</div>
 	</div>
 </template>
@@ -28,7 +32,8 @@ export default {
 				facing: 'down'
 			},
 			playerPositionX: 0,
-			playerPositionY: 5
+			playerPositionY: 5,
+			spell:[]
 		}
 	},
 	components: {
@@ -116,10 +121,27 @@ export default {
 			this.playerPositionX = newX
 
 			this.updatePlayer()
+		},
+		castSpell(frames) {
+		  console.log(frames)
+		},
+	},
+  computed: {
+		spellJSON: {
+			get: function() {
+				return JSON.stringify(this.spell)
+			},
+			set: function(spell) {
+				this.spell =  JSON.parse(spell)
+			}
 		}
-	}
+  }
 }
 </script>
 
 <style lang="css" scoped>
+	.spellLoader {
+		width: 100%;
+		height: 200px;
+	}
 </style>
