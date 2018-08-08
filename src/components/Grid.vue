@@ -19,6 +19,7 @@ import Vue from 'vue'
 import SpellBuilderSpellNode from '@/components/SpellBuilder/Nodes/SpellBuilderSpellNode'
 import SpellBuilderPlayerNode from '@/components/SpellBuilder/Nodes/SpellBuilderPlayerNode'
 import GamePlayerNode from '@/components/Game/Nodes/GamePlayerNode'
+import GameFieldNode from '@/components/Game/Nodes/GameFieldNode'
 import NodeComponent from './NodeComponent'
 import Utils from '@/Domain/Utils'
 
@@ -61,7 +62,8 @@ export default {
     SpellBuilderSpellNode,
 		NodeComponent,
     SpellBuilderPlayerNode,
-		GamePlayerNode
+		GamePlayerNode,
+    GameFieldNode
 	},
 	methods: {
     onNodeEvent(event, row, column) {
@@ -75,7 +77,8 @@ export default {
       }
 
       this.grid[y][x] = value;
-      this.gridCached = false
+      this.gridCached = false;
+      this.displayGrid = this.getFormattedGrid();
     },
 
     getGridValue(x, y) {
