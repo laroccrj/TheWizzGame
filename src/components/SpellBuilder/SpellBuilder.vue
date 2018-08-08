@@ -1,6 +1,6 @@
 <template>
-	<div>
-		<h1>Spell Builder!</h1>
+  <div>
+    <h1>Spell Builder!</h1>
     <div>
       <button @click="startPlayback()">Playback</button>
     </div>
@@ -38,7 +38,7 @@
         v-clipboard:success="() => showAlert('Copied spell to clipboard')"
         v-clipboard:error="() => showAlert('Error copying spell to clipboard')">Copy Spell to Clipboard</button>
     </div>
-	</div>
+  </div>
 </template>
 
 <script>
@@ -69,13 +69,13 @@ export default {
   },
   mounted: function() {
     // Place the player in the center and save the first frame as an empty frame
-    var playerPosX = Math.round(this.gridWidth / 2) - 1;
-    var playerPosY = Math.round(this.gridHeight / 2) - 1;
-    this.originNode = { x: playerPosX, y: playerPosY };
-    this.frames.push([]);
+    var playerPosX = Math.round(this.gridWidth / 2) - 1
+    var playerPosY = Math.round(this.gridHeight / 2) - 1
+    this.originNode = { x: playerPosX, y: playerPosY }
+    this.frames.push([])
 
     // Load initial frame and display it
-    this.loadFrame(0);
+    this.loadFrame(0)
   },
   methods: {
     /**
@@ -88,11 +88,11 @@ export default {
      *
      */
     onNodeEvent(event, x, y) {
-      var node = this.$refs.grid.getGridValue(x, y);
+      var node = this.$refs.grid.getGridValue(x, y)
 
-      if(node.component === 'SpellBuilderSpellNode') {
-        if(event === 'click'){
-          node.selected = !node.selected;
+      if (node.component === 'SpellBuilderSpellNode') {
+        if (event === 'click') {
+          node.selected = !node.selected
         }
       }
     },
@@ -132,7 +132,7 @@ export default {
       if (!node.active) {
         node.active = true
       }
-      this.$refs.grid.setGridValue(x,y, node);
+      this.$refs.grid.setGridValue(x, y, node)
     },
 
     /**
@@ -235,7 +235,7 @@ export default {
      * @param frameId
      */
     loadFrame(frameId) {
-      this.resetGrid();
+      this.resetGrid()
 
       if (frameId > this.frames.length - 1) {
         frameId = this.frames.length - 1

@@ -1,18 +1,18 @@
 <template>
-	<button :class="{ inactive: !options.active, selected: options.selected }"
-					:disabled="options.active == false"
-					@click="onNodeEvent('click')"
-	>-</button>
+  <button :class="{ inactive: !options.active, selected: options.selected }"
+          :disabled="options.active == false"
+          @click="onNodeEvent('click')"
+  >-</button>
 </template>
 
 <script>
 import NodeComponent from '@/components/NodeComponent'
 export default {
-  extends:NodeComponent,
+  extends: NodeComponent,
   name: 'SpellBuilderSpellNode',
   data() {
     return {}
-  },
+  }
 }
 </script>
 

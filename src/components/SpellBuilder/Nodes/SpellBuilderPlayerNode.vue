@@ -4,15 +4,15 @@
 
 <script>
 export default {
-  name: 'SpellBuilderPlayerNode',
+	name: 'SpellBuilderPlayerNode',
 
-  data() {
-    return {}
-  },
-  props: {
-    row: Number,
-    column: Number
-  }
+	data() {
+		return {}
+	},
+	props: {
+		row: Number,
+		column: Number
+	}
 }
 </script>
 
