@@ -35,7 +35,7 @@ export default {
 			},
 			playerPositionX: 0,
 			playerPositionY: 5,
-			spell:[],
+			spell: [[{ x: 0, y: -1 }], [{ x: 0, y: -2 }], [{ x: 0, y: -3 }], [{ x: 0, y: -4 }]],
 			spellInstances: [],
 			currentSpellNodes: []
 		}
@@ -49,27 +49,25 @@ export default {
 	methods: {
 		updatePlayer() {
 			this.$refs.grid.setGridValue(this.playerPositionX, this.playerPositionY, this.playerNode)
+			this.nextTurn()
 		},
 		nextTurn() {
-      this.clearSpellNodes();
-			let i = this.spellInstances.length;
-			while(i--) {
-			  let spellInstance = this.spellInstances[i]
-			  this.drawSpellFrame(spellInstance)
+			this.clearSpellNodes()
+			let i = this.spellInstances.length
+			while (i--) {
+				let spellInstance = this.spellInstances[i]
+				this.drawSpellFrame(spellInstance)
 			}
 		},
 		clearSpellNodes() {
-      let i = this.currentSpellNodes.length;
-      console.log(this.currentSpellNodes);
+			let i = this.currentSpellNodes.length
 
-      while(i--) {
-        let spellNode = this.currentSpellNodes[i]
-				console.log(spellNode.y)
-        this.$refs.grid.setGridValue(spellNode.x, spellNode.y, 'GameFieldNode')
-      }
+			while (i--) {
+				let spellNode = this.currentSpellNodes[i]
+				this.$refs.grid.setGridValue(spellNode.x, spellNode.y, { component: 'GameFieldNode' })
+			}
 
-      this.currentSpellNodes.splice(0);
-      console.log(this.currentSpellNodes);
+			this.currentSpellNodes = []
 		},
 		rotateRight() {
 			switch (this.playerNode.facing) {
@@ -145,40 +143,61 @@ export default {
 			this.updatePlayer()
 		},
 		castSpell(frames) {
-		  let spellInstance = new SpellInstance(this.playerPositionX, this.playerPositionY, frames);
-			this.spellInstances.push(spellInstance);
-			this.nextTurn();
+			let spellInstance = new SpellInstance(
+				this.playerNode.facing,
+				this.playerPositionX,
+				this.playerPositionY,
+				frames
+			)
+			this.spellInstances.push(spellInstance)
+			this.nextTurn()
 		},
 		drawSpellFrame(spellInstance) {
-		  let frame = spellInstance.getNextFrame()
-		  let i = frame.length;
-		  while(i--) {
-		    let spellNode = frame[i];
-		    let x = spellNode.x + spellInstance.originX
-				let y = spellNode.y + spellInstance.originY
+			let frame = spellInstance.getNextFrame()
+			let i = frame.length
+			while (i--) {
+				let spellNode = frame[i]
+				let x = spellInstance.originX
+				let y = spellInstance.originY
 
-        this.$refs.grid.setGridValue(
-          x,
-					y,
-					{
-          	component: 'GameSpellNode'
-          }
-				)
+				switch (spellInstance.direction) {
+					case 'left':
+						x += spellNode.y
+						y -= spellNode.x
+						break
+					case 'up':
+						x += spellNode.x
+						y += spellNode.y
+						break
+					case 'right':
+						x -= spellNode.y
+						y += spellNode.x
+						break
+					case 'down':
+						x -= spellNode.x
+						y -= spellNode.y
+						break
+				}
 
-				this.currentSpellNodes.push({x:x, y:y});
+				if (!this.$refs.grid.withinBounds(x, y)) return
+
+				this.$refs.grid.setGridValue(x, y, {
+					component: 'GameSpellNode'
+				})
+				this.currentSpellNodes.push({ x: x, y: y })
 			}
 		}
 	},
-  computed: {
+	computed: {
 		spellJSON: {
 			get: function() {
 				return JSON.stringify(this.spell)
 			},
 			set: function(spell) {
-				this.spell =  JSON.parse(spell)
+				this.spell = JSON.parse(spell)
 			}
 		}
-  }
+	}
 }
 </script>
 
