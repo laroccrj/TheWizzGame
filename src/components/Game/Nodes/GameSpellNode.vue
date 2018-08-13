@@ -12,14 +12,14 @@ export default {
 	name: 'GamePlayerNode',
 	data() {
 		return {}
-	},
+	}
 }
 </script>
 
 <style scoped>
 div {
 	width: 100%;
-  height: 100%;
-  background-color: red;
+	height: 100%;
+	background-color: red;
 }
 </style>
