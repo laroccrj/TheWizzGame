@@ -23,6 +23,7 @@
       <grid ref="grid"
             :rows=11
             :columns=11
+            :width=320
             defaultComponent="SpellBuilderSpellNode"
             :defaultOptions="{active:false, selected: false}"
             @onNodeEvent="onNodeEvent">
