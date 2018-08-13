@@ -30,7 +30,6 @@ export default {
 .spell-node-button {
   padding: 0;
   border: 0;
-  padding: 0;
   width: 90%;
   height: 90%;
   border-radius: 3px;

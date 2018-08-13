@@ -69,13 +69,10 @@ export default {
     },
 
     gridStyles: function() {
-      console.log(this.width)
-      const columnWidth = Math.floor(this.width / this.columns)
-      const str = `${columnWidth}px `.repeat(this.columns)
       return {
         width: `${this.width}px`,
         height: `${this.width}px`,
-        gridTemplateColumns: str
+        gridTemplateColumns: `repeat(${this.columns}, ${Math.floor(this.width / this.columns)}px)`
       }
     }
   },
