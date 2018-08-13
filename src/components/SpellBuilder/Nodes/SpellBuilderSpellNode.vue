@@ -1,6 +1,6 @@
 <template>
   <button class="spell-node-button"
-          :class="{ active: options.active, inactive: !options.active, selected: options.selected}"
+          :class="{ inactive: !options.active, selected: options.selected}"
           :disabled="options.active == false"
           @click="onNodeEvent('click')"
   >{{options.selected ? '⚡' : '&nbsp;'}}</button>
@@ -19,10 +19,7 @@ export default {
 
 <style lang="css" scoped>
 .inactive {
-  background-color: #fae5e5;
-}
-.active {
-  background-color: #dd8888;
+  background-color: #f3e8e8;
 }
 .selected {
   background-color: #3f000b;

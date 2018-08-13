@@ -1,35 +1,37 @@
 <template>
   <div>
-    <h1>Spell Builder!</h1>
-    <div>
-      <button @click="startPlayback()">Playback</button>
-    </div>
-    <div>
-      <button v-for="frame in frameNumbers" :key="frame"
-              :class="{selectedFrame: frame == currentFrame}"
-              @click="loadFrame(frame)">
-        {{ frame }}
-      </button>
-    </div>
-    <div>
-      <button @click="previousFrame"
-              :disabled="currentFrame == 0 || playingBack">Prev Frame</button>
-      <button @click="nextFrame"
-              :disabled="playingBack">{{ currentFrame == frameCount ? 'New' : 'Next' }} Frame</button>
+    <h1>Spell Builder</h1>
+    <div class="spell-builder-controls">
+      <div>
+        <button @click="startPlayback()">Playback</button>
+      </div>
+      <div class="spell-builder-frames">
+        <button v-for="frame in frameNumbers" :key="frame"
+                :class="{selectedFrame: frame == currentFrame}"
+                @click="loadFrame(frame)">
+          {{ frame }}
+        </button>
+      </div>
+      <div>
+        <button @click="previousFrame"
+                :disabled="currentFrame == 0 || playingBack">Prev Frame</button>
+        <button @click="nextFrame"
+                :disabled="playingBack">{{ currentFrame == frameCount ? 'New' : 'Next' }} Frame</button>
+      </div>
     </div>
     <div>
       <grid ref="grid"
             :rows=11
             :columns=11
-            :width=320
+            :width=400
             defaultComponent="SpellBuilderSpellNode"
             :defaultOptions="{active:false, selected: false}"
             @onNodeEvent="onNodeEvent">
       </grid>
     </div>
-    <div>
-      <textarea v-model="spellJSON" class='spellLoader'></textarea>
-      <button type="button"
+    <div class="spell-loader-container">
+      <textarea v-model="spellJSON" class='spell-loader'></textarea>
+      <button type="button" class="spell-loader-button"
         v-clipboard:copy="spellJSON"
         v-clipboard:success="() => showAlert('Copied spell to clipboard')"
         v-clipboard:error="() => showAlert('Error copying spell to clipboard')">Copy Spell to Clipboard</button>
@@ -419,12 +421,40 @@ export default {
 </script>
 
 <style lang="css" scoped>
-.spellLoader {
+.spell-loader-container * {
+  margin: 0 auto;
+  border: 0;
   width: 100%;
-  height: 200px;
+  max-width: 350px;
+  display: block;
+}
+.spell-loader {
+  height: 100px;
+  padding: 0;
+  outline: 0;
+  background: #f3e8e8;
+}
+.spell-loader-button {
+  padding: 10px;
+  border-radius: 0 0 10px 10px;
 }
 .selectedFrame {
   background-color: green;
   color: white;
+}
+.spell-builder-controls div {
+  margin: 5px 0;
+}
+.spell-builder-frames button {
+  border-radius: 0;
+}
+.spell-builder-frames button:first-child {
+  border-radius: 10px 0 0 10px;
+}
+.spell-builder-frames button:last-child {
+  border-radius: 0 10px 10px 0;
+}
+.spell-builder-frames button:only-child {
+  border-radius: 10px;
 }
 </style>
