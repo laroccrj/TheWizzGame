@@ -6,19 +6,19 @@
 import NodeComponent from '@/components/NodeComponent'
 
 export default {
-	extends: NodeComponent,
-	name: 'GameFieldNode',
+  extends: NodeComponent,
+  name: 'GameFieldNode',
 
-	data() {
-		return {}
-	}
+  data() {
+    return {}
+  }
 }
 </script>
 
 <style lang="css" scoped>
-	div {
-		width:50px;
-		height:50px;
-		background-color: green;
-	}
+div {
+  width: 100%;
+  height: 100%;
+  background-color: green;
+}
 </style>

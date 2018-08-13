@@ -3,12 +3,19 @@
 		<div>
 			<h1>Game Time</h1>
 		</div>
-		<div><button @click="castSpell(spell)">Cast Spell</button></div>
-		<div><button @click='rotateLeft'>Rotate Left</button><button @click='moveForward'>Move Forward</button><button @click='rotateRight'>Rotate Right</button></div>
+		<div>
+			<button @click="castSpell(spell)">Cast Spell</button>
+		</div>
+		<div>
+			<button @click='rotateLeft'>Rotate Left</button>
+			<button @click='moveForward'>Move Forward</button>
+			<button @click='rotateRight'>Rotate Right</button>
+		</div>
 		<div>
 			<grid ref="grid"
 						:rows=11
 						:columns=11
+						:width=500
 						defaultComponent="GameFieldNode"
 			>
 			</grid>
@@ -25,8 +32,7 @@ import Grid from '@/components/Grid'
 import SpellInstance from '@/Domain/Game/SpellInstance'
 
 export default {
-	name: 'Game',
-
+  name: 'Game',
 	data() {
 		return {
 			playerNode: {
@@ -131,14 +137,14 @@ export default {
 			let newX = this.playerPositionX + changeX
 			let newY = this.playerPositionY + changeY
 
-			if (!this.$refs.grid.withinBounds(newX, newY)) return
+      if (!this.$refs.grid.withinBounds(newX, newY)) return
 
-			this.$refs.grid.setGridValue(this.playerPositionX, this.playerPositionY, {
-				component: 'GameFieldNode'
-			})
+      this.$refs.grid.setGridValue(this.playerPositionX, this.playerPositionY, {
+        component: 'GameFieldNode'
+      })
 
-			this.playerPositionY = newY
-			this.playerPositionX = newX
+      this.playerPositionY = newY
+      this.playerPositionX = newX
 
 			this.updatePlayer()
 		},

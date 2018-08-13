@@ -1,16 +1,14 @@
 <template>
-  <table>
-    <tr v-for="row in displayGrid">
-      <td v-for="node in row.columns">
-        <component :is="node.val.component"
-                   :row="node.row"
-                   :column="node.column"
-                   :options="node.val"
-                   @onNodeEvent="onNodeEvent"
-        ></component>
-      </td>
-    </tr>
-  </table>
+  <div class="grid" v-bind:style="gridStyles">
+    <div v-for="node in flattenedGrid" class="grid-component">
+      <component :is="node.val.component"
+        :row="node.row"
+        :column="node.column"
+        :options="node.val"
+        @onNodeEvent="onNodeEvent"
+      ></component>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -34,6 +32,7 @@ export default {
   props: {
     rows: Number,
     columns: Number,
+    width: Number,
     defaultComponent: {
       type: String,
       default: 'NodeComponent'
@@ -56,6 +55,27 @@ export default {
     }
 
     this.displayGrid = this.getFormattedGrid()
+  },
+  computed: {
+    flattenedGrid: function() {
+      const arr = []
+
+      for (const row of this.displayGrid) {
+        for (const node of row.columns) {
+          arr.push(node)
+        }
+      }
+
+      return arr
+    },
+
+    gridStyles: function() {
+      return {
+        width: `${this.width}px`,
+        height: `${this.width}px`,
+        gridTemplateColumns: `repeat(${this.columns}, ${Math.floor(this.width / this.columns)}px)`
+      }
+    }
   },
   // Needs to include all possible nodes
   components: {
@@ -126,4 +146,8 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.grid {
+  display: grid;
+  margin: 20px auto;
+}
 </style>
