@@ -91,4 +91,21 @@ export default class FrameCleaner {
 
     return equal
   }
+
+  /**
+   * Compares two sets of frames
+   * @param  {array} frameSet1
+   * @param  {array} frameSet2
+   * @return {boolean}
+   */
+  static compareFrameSets(frameSet1, frameSet2) {
+    var equal = true
+
+    if (frameSet1.length != frameSet2.length) return false
+
+    var i = frameSet1.length
+    while (i--) equal &= FrameCleaner.compareFrames(frameSet1[i], frameSet2[i])
+
+    return equal
+  }
 }

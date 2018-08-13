@@ -1,40 +1,37 @@
 <template>
   <div>
-    <h1>Spell Builder!</h1>
-    <div>
-      <button @click="startPlayback()">Playback</button>
-    </div>
-    <div>
-      <button v-for="frame in frameNumbers" :key="frame"
-              :class="{selectedFrame: frame == currentFrame}"
-              @click="loadFrame(frame)">
-        {{ frame }}
-      </button>
-    </div>
-    <div>
-      <button @click="previousFrame"
-              :disabled="currentFrame == 0 || playingBack">Prev Frame</button>
-      <button @click="saveFrame(currentFrame)"
-              :disabled="playingBack">Save Frame</button>
-      <button @click="nextFrame"
-              :disabled="playingBack">{{ currentFrame == frameCount ? 'New' : 'Next' }} Frame</button>
+    <h1>Spell Builder</h1>
+    <div class="spell-builder-controls">
+      <div>
+        <button @click="startPlayback()">Playback</button>
+      </div>
+      <div class="spell-builder-frames">
+        <button v-for="frame in frameNumbers" :key="frame"
+                :class="{selectedFrame: frame == currentFrame}"
+                @click="loadFrame(frame)">
+          {{ frame }}
+        </button>
+      </div>
+      <div>
+        <button @click="previousFrame"
+                :disabled="currentFrame == 0 || playingBack">Prev Frame</button>
+        <button @click="nextFrame"
+                :disabled="playingBack">{{ currentFrame == frameCount ? 'New' : 'Next' }} Frame</button>
+      </div>
     </div>
     <div>
       <grid ref="grid"
             :rows=11
             :columns=11
-            :width=320
+            :width=400
             defaultComponent="SpellBuilderSpellNode"
             :defaultOptions="{active:false, selected: false}"
             @onNodeEvent="onNodeEvent">
       </grid>
     </div>
-    <div>
-      Current frame: {{currentFrame}}
-    </div>
-    <div>
-      <textarea v-model="spellJSON" class='spellLoader'></textarea>
-      <button type="button"
+    <div class="spell-loader-container">
+      <textarea v-model="spellJSON" class='spell-loader'></textarea>
+      <button type="button" class="spell-loader-button"
         v-clipboard:copy="spellJSON"
         v-clipboard:success="() => showAlert('Copied spell to clipboard')"
         v-clipboard:error="() => showAlert('Error copying spell to clipboard')">Copy Spell to Clipboard</button>
@@ -94,6 +91,10 @@ export default {
       if (node.component === 'SpellBuilderSpellNode') {
         if (event === 'click') {
           node.selected = !node.selected
+
+          if (this.saveFrame(this.currentFrame) === false) {
+            node.selected = !node.selected
+          }
         }
       }
     },
@@ -199,26 +200,38 @@ export default {
      * are still possible
      * If the frame is saved with no selected nodes, therefore deleted, it will load the previous node
      * @param frameId
-     * @returns {*}
+     * @returns New frame id or false if the save was canceled
      */
     saveFrame(frameId) {
+      // Deep copy frames into a temp variable so we can rollback save if need be
+      let tempFrames = JSON.parse(JSON.stringify(this.frames))
       var frame = this.getFrameFromGrid()
 
       if (frameId == -1) {
-        frameId = this.frames.push(frame) - 1
+        frameId = tempFrames.push(frame) - 1
       } else {
-        this.$set(this.frames, frameId, frame)
+        tempFrames[frameId] = frame
       }
 
-      // clean frames
-      if (frameId >= 0) {
-        // no need to clean if it's a new frame
+      // clean frames if it is not a new frame
+      if (frameId < this.frames.length) {
         let cleanFrom = frameId == 0 ? frameId : frameId - 1 // Want to clean from the previous frame unless we are at the first frame
         let spliceFrom = frameId == 0 ? 1 : frameId // Don't splice the first frame
+        let cleanCheckFrames = JSON.parse(JSON.stringify(tempFrames)) // Deep copy again so we can tell if changes were made from cleaning
 
-        var framesToClean = this.frames.splice(spliceFrom)
-        var cleanFrames = FrameCleaner.cleanFrames(this.frames[cleanFrom], framesToClean)
-        Array.prototype.push.apply(this.frames, cleanFrames)
+        var framesToClean = cleanCheckFrames.splice(spliceFrom)
+        var cleanFrames = FrameCleaner.cleanFrames(cleanCheckFrames[cleanFrom], framesToClean)
+        Array.prototype.push.apply(cleanCheckFrames, cleanFrames)
+
+        if (FrameCleaner.compareFrameSets(tempFrames, cleanCheckFrames)) {
+          this.frames = cleanCheckFrames
+        } else if (confirm('This will cause changes in later frames, continue?')) {
+          this.frames = cleanCheckFrames
+        } else {
+          return false
+        }
+      } else {
+        this.frames = tempFrames
       }
 
       // If this was a save of an empty frame, this frame, and the ones after are all deleted so load the previous one
@@ -276,7 +289,6 @@ export default {
      * Loads the frame before the current frame
      */
     previousFrame() {
-      this.checkForChanges()
       this.loadFrame(this.currentFrame - 1)
     },
 
@@ -285,25 +297,11 @@ export default {
      * If we are currently on the last frame, it will add a new one
      */
     nextFrame() {
-      this.checkForChanges()
       if (this.currentFrame != this.frames.length - 1) {
         this.loadFrame(this.currentFrame + 1)
       } else {
         var newFrameId = this.saveFrame(-1)
         this.loadFrame(newFrameId)
-      }
-    },
-
-    /**
-     * Compares the current grid to the frame that is saved currentFrame
-     * If there are differences, it asks the user if they want to save the changes
-     */
-    checkForChanges() {
-      let frame = this.frames[this.currentFrame]
-      if (!FrameCleaner.compareFrames(this.getFrameFromGrid(), frame)) {
-        if (confirm('Save changes to current frame?')) {
-          this.saveFrame(this.currentFrame)
-        }
       }
     },
 
@@ -423,12 +421,40 @@ export default {
 </script>
 
 <style lang="css" scoped>
-.spellLoader {
+.spell-loader-container * {
+  margin: 0 auto;
+  border: 0;
   width: 100%;
-  height: 200px;
+  max-width: 350px;
+  display: block;
+}
+.spell-loader {
+  height: 100px;
+  padding: 0;
+  outline: 0;
+  background: #f3e8e8;
+}
+.spell-loader-button {
+  padding: 10px;
+  border-radius: 0 0 10px 10px;
 }
 .selectedFrame {
   background-color: green;
   color: white;
+}
+.spell-builder-controls div {
+  margin: 5px 0;
+}
+.spell-builder-frames button {
+  border-radius: 0;
+}
+.spell-builder-frames button:first-child {
+  border-radius: 10px 0 0 10px;
+}
+.spell-builder-frames button:last-child {
+  border-radius: 0 10px 10px 0;
+}
+.spell-builder-frames button:only-child {
+  border-radius: 10px;
 }
 </style>
