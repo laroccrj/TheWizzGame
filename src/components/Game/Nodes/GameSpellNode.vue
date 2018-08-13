@@ -18,8 +18,8 @@ export default {
 
 <style scoped>
 div {
-	width: 50px;
-	height: 50px;
+	width: 100%;
+  height: 100%;
   background-color: red;
 }
 </style>
