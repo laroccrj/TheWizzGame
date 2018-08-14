@@ -5,12 +5,12 @@ export default class GameController {
   constructor(grid) {
     this.grid = grid
     this.players = [
-      new Player('Player 1', 0,0, Player.FACING_DOWN),
-      new Player('Player 2', 10,10, Player.FACING_UP)
+      new Player(0, 'Player 1', 0,0, Player.FACING_DOWN),
+      new Player(1, 'Player 2', 10,10, Player.FACING_UP)
     ];
     this.spellInstances = []
     this.currentPlayerId = 0
-    this.drawPlayers()
+    this.drawGame()
   }
 
   get currentPlayer() {
@@ -54,10 +54,24 @@ export default class GameController {
 
         if (!this.grid.withinBounds(spellNode.x, spellNode.y)) return
 
+        // Check if it hits a player
+        let playerId = this.players.length
+        while(playerId--) {
+          let player = this.players[playerId]
+          if(player.posX === spellNode.x && player.posY === spellNode.y) this.playerHitBySpell(player, spellInstance)
+        }
+
         this.grid.setGridValue(spellNode.x, spellNode.y, {
           component: 'GameSpellNode'
         })
       }
+    }
+  }
+
+  playerHitBySpell(player, spell) {
+    if(player.id !== spell.player.id) {
+      let victor = this.players[spell.player.id]
+      alert(victor.displayName + ' Wins!')
     }
   }
 
@@ -121,14 +135,7 @@ export default class GameController {
 
   castSpell(frames) {
     let player = this.players[this.currentPlayerId]
-
-    let spellInstance = new SpellInstance(
-      player.facing,
-      player.posX,
-      player.posY,
-      frames
-    )
-
+    let spellInstance = new SpellInstance(player, frames)
     this.spellInstances.push(spellInstance)
     this.nextTurn()
   }

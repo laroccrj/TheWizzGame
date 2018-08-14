@@ -1,10 +1,11 @@
 import Player from '@/Domain/Game/Player'
 
 export default class SpellInstance {
-  constructor(direction, originX, originY, frames) {
-    this.direction = direction
-    this.originX = originX
-    this.originY = originY
+  constructor(player, frames) {
+    this.player = player
+    this.direction = player.facing
+    this.originX = player.posX
+    this.originY = player.posY
     this.frames = frames
     this.currentFrame = 0
     this.makeFramesRelativeToOrigin()
