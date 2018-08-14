@@ -54,10 +54,6 @@ export default {
     this.gameController = new GameController(this.$refs.grid)
 	},
 	methods: {
-		updatePlayer() {
-			this.$refs.grid.setGridValue(this.playerPositionX, this.playerPositionY, this.playerNode)
-			this.nextTurn()
-		},
 		nextTurn() {
 			this.clearSpellNodes()
 			let i = this.spellInstances.length
@@ -77,77 +73,13 @@ export default {
 			this.currentSpellNodes = []
 		},
 		rotateRight() {
-			switch (this.playerNode.facing) {
-				case 'left':
-					this.playerNode.facing = 'up'
-					break
-				case 'up':
-					this.playerNode.facing = 'right'
-					break
-				case 'right':
-					this.playerNode.facing = 'down'
-					break
-				case 'down':
-					this.playerNode.facing = 'left'
-					break
-				default:
-					this.playerNode.facing = 'down'
-					console.error('Invalid playerNode.facing. Defaulting to down', this.playerNode.facing)
-					break
-			}
-			this.updatePlayer()
+			this.gameController.rotateRight()
 		},
 		rotateLeft() {
-			switch (this.playerNode.facing) {
-				case 'left':
-					this.playerNode.facing = 'down'
-					break
-				case 'up':
-					this.playerNode.facing = 'left'
-					break
-				case 'right':
-					this.playerNode.facing = 'up'
-					break
-				case 'down':
-					this.playerNode.facing = 'right'
-					break
-				default:
-					this.playerNode.facing = 'down'
-					console.error('Invalid playerNode.facing. Defaulting to down', this.playerNode.facing)
-					break
-			}
-			this.updatePlayer()
+			this.gameController.rotateLeft()
 		},
 		moveForward() {
-			switch (this.playerNode.facing) {
-				case 'left':
-					this.movePlayer(-1, 0)
-					break
-				case 'up':
-					this.movePlayer(0, -1)
-					break
-				case 'right':
-					this.movePlayer(1, 0)
-					break
-				case 'down':
-					this.movePlayer(0, 1)
-					break
-			}
-		},
-		movePlayer(changeX, changeY) {
-			let newX = this.playerPositionX + changeX
-			let newY = this.playerPositionY + changeY
-
-      if (!this.$refs.grid.withinBounds(newX, newY)) return
-
-      this.$refs.grid.setGridValue(this.playerPositionX, this.playerPositionY, {
-        component: 'GameFieldNode'
-      })
-
-      this.playerPositionY = newY
-      this.playerPositionX = newX
-
-			this.updatePlayer()
+			this.gameController.movePlayerForward()
 		},
 		castSpell(frames) {
 			let spellInstance = new SpellInstance(
