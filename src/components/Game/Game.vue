@@ -29,6 +29,7 @@
 <script>
 import Vue from 'vue'
 import Grid from '@/components/Grid'
+import GameController from '@/Domain/Game/GameController'
 import SpellInstance from '@/Domain/Game/SpellInstance'
 
 export default {
@@ -50,7 +51,7 @@ export default {
 		Grid
 	},
 	mounted: function() {
-		this.updatePlayer()
+    this.gameController = new GameController(this.$refs.grid)
 	},
 	methods: {
 		updatePlayer() {
