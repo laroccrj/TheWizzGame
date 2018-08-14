@@ -47,31 +47,10 @@ export default class GameController {
 
       while (n--) {
         let spellNode = frame[n]
-        let x = spellInstance.originX
-        let y = spellInstance.originY
 
-        switch (spellInstance.direction) {
-          case Player.FACING_LEFT:
-            x += spellNode.y
-            y -= spellNode.x
-            break
-          case Player.FACING_UP:
-            x += spellNode.x
-            y += spellNode.y
-            break
-          case Player.FACING_RIGHT:
-            x -= spellNode.y
-            y += spellNode.x
-            break
-          case Player.FACING_DOWN:
-            x -= spellNode.x
-            y -= spellNode.y
-            break
-        }
+        if (!this.grid.withinBounds(spellNode.x, spellNode.y)) return
 
-        if (!this.grid.withinBounds(x, y)) return
-
-        this.grid.setGridValue(x, y, {
+        this.grid.setGridValue(spellNode.x, spellNode.y, {
           component: 'GameSpellNode'
         })
       }

@@ -53,7 +53,9 @@ export default {
 		moveForward() {
 			this.gameController.movePlayerForward()
 		},
-		castSpell(frames) {
+		castSpell(originalFrames) {
+		  // Make deep copy of the frames
+      let frames = JSON.parse(JSON.stringify(originalFrames))
 			this.gameController.castSpell(frames)
 		},
 	},
