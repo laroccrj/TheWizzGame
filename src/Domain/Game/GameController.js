@@ -1,4 +1,5 @@
 import Player from '@/Domain/Game/Player'
+import SpellInstance from '@/Domain/Game/SpellInstance'
 
 export default class GameController {
   constructor(grid) {
@@ -6,6 +7,7 @@ export default class GameController {
     this.players = [
       new Player(0,0, Player.FACING_DOWN)
     ];
+    this.spellInstances = []
     this.currentPlayer = 0
     this.drawPlayers()
   }
@@ -17,7 +19,9 @@ export default class GameController {
   }
 
   drawGame() {
+    this.resetGrid()
     this.drawPlayers()
+    this.drawSpells()
   }
 
   drawPlayers() {
@@ -27,6 +31,59 @@ export default class GameController {
       component: 'GamePlayerNode',
       facing: player.facing
     })
+  }
+
+  drawSpells() {
+    let i = this.spellInstances.length
+    while (i--) {
+      let spellInstance = this.spellInstances[i]
+      let frame = spellInstance.getNextFrame()
+      let n = frame.length
+
+      while (n--) {
+        let spellNode = frame[n]
+        let x = spellInstance.originX
+        let y = spellInstance.originY
+
+        switch (spellInstance.direction) {
+          case Player.FACING_LEFT:
+            x += spellNode.y
+            y -= spellNode.x
+            break
+          case Player.FACING_UP:
+            x += spellNode.x
+            y += spellNode.y
+            break
+          case Player.FACING_RIGHT:
+            x -= spellNode.y
+            y += spellNode.x
+            break
+          case Player.FACING_DOWN:
+            x -= spellNode.x
+            y -= spellNode.y
+            break
+        }
+
+        if (!this.grid.withinBounds(x, y)) return
+
+        this.grid.setGridValue(x, y, {
+          component: 'GameSpellNode'
+        })
+      }
+    }
+  }
+
+  resetGrid() {
+    var x = this.grid.columns
+    var y = this.grid.rows
+
+    while (y--) {
+      while (x--) {
+        var node = this.grid.getGridValue(x, y)
+        node.component = 'GameFieldNode'
+      }
+      x = this.grid.columns
+    }
   }
 
   movePlayerForward() {
@@ -58,10 +115,6 @@ export default class GameController {
 
     if (!this.grid.withinBounds(newX, newY)) return
 
-    this.grid.setGridValue(player.posX, player.posY, {
-      component: 'GameFieldNode'
-    })
-
     player.posY = newY
     player.posX = newX
   }
@@ -75,6 +128,20 @@ export default class GameController {
   rotateLeft() {
     let player = this.players[this.currentPlayer]
     player.rotateLeft()
+    this.nextTurn()
+  }
+
+  castSpell(frames) {
+    let player = this.players[this.currentPlayer]
+
+    let spellInstance = new SpellInstance(
+      player.facing,
+      player.posX,
+      player.posY,
+      frames
+    )
+
+    this.spellInstances.push(spellInstance)
     this.nextTurn()
   }
 }
