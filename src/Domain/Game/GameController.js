@@ -56,22 +56,23 @@ export default class GameController {
 
         // Check if it hits a player
         let playerId = this.players.length
+        let playerHit = false
         while(playerId--) {
           let player = this.players[playerId]
-          if(player.posX === spellNode.x && player.posY === spellNode.y) this.playerHitBySpell(player, spellInstance)
+          if(player.posX === spellNode.x && player.posY === spellNode.y) playerHit = playerHit.id
         }
 
-        this.grid.setGridValue(spellNode.x, spellNode.y, {
-          component: 'GameSpellNode'
-        })
+        if(playerHit !== false) {
+          if(player.id !== spell.player.id) {
+            let victor = this.players[spell.player.id]
+            alert(victor.displayName + ' Wins!')
+          }
+        } else {
+          this.grid.setGridValue(spellNode.x, spellNode.y, {
+            component: 'GameSpellNode'
+          })
+        }
       }
-    }
-  }
-
-  playerHitBySpell(player, spell) {
-    if(player.id !== spell.player.id) {
-      let victor = this.players[spell.player.id]
-      alert(victor.displayName + ' Wins!')
     }
   }
 
