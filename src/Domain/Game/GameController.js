@@ -5,7 +5,8 @@ export default class GameController {
   constructor(grid) {
     this.grid = grid
     this.players = [
-      new Player(0,0, Player.FACING_DOWN)
+      new Player(0,0, Player.FACING_DOWN),
+      new Player(10,10, Player.FACING_UP)
     ];
     this.spellInstances = []
     this.currentPlayer = 0
@@ -25,12 +26,16 @@ export default class GameController {
   }
 
   drawPlayers() {
-    let player = this.players[this.currentPlayer]
-    this.grid.setGridValue(player.posX, player.posY,
-    {
-      component: 'GamePlayerNode',
-      facing: player.facing
-    })
+    let i = this.players.length
+    while (i--) {
+      let player = this.players[i]
+      this.grid.setGridValue(player.posX, player.posY,
+        {
+          component: 'GamePlayerNode',
+          facing: player.facing
+        }
+      )
+    }
   }
 
   drawSpells() {
