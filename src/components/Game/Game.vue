@@ -1,30 +1,32 @@
 <template>
-	<div>
-		<div>
-			<h1>Game Time</h1>
-		</div>
-		<div><h2>{{ displayName }}'s turn</h2></div>
-		<div>
-			<button @click="castSpell(spell)">Cast Spell</button>
-		</div>
-		<div>
-			<button @click='rotateLeft'>Rotate Left</button>
-			<button @click='moveForward'>Move Forward</button>
-			<button @click='rotateRight'>Rotate Right</button>
-		</div>
-		<div>
-			<grid ref="grid"
-						:rows=11
-						:columns=11
-						:width=500
-						defaultComponent="GameFieldNode"
-			>
-			</grid>
-		</div>
-		<div>
-			<textarea v-model="spellJSON" class='spellLoader'></textarea>
-		</div>
-	</div>
+  <div>
+    <div>
+      <h2>Game Time</h2>
+    </div>
+    <div>
+      <h3>{{ displayName }}'s turn</h3>
+    </div>
+    <div>
+      <button @click="castSpell(spell)">Cast Spell</button>
+    </div>
+    <div>
+      <button @click='rotateLeft'>Rotate Left</button>
+      <button @click='moveForward'>Move Forward</button>
+      <button @click='rotateRight'>Rotate Right</button>
+    </div>
+    <div>
+      <grid ref="grid"
+            :rows=11
+            :columns=11
+            :width=500
+            defaultComponent="GameFieldNode"
+      >
+      </grid>
+    </div>
+    <div>
+      <textarea v-model="spellJSON" class='spellLoader'></textarea>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -83,8 +85,8 @@ export default {
 </script>
 
 <style lang="css" scoped>
-	.spellLoader {
-		width: 100%;
-		height: 200px;
-	}
+.spellLoader {
+  width: 100%;
+  height: 200px;
+}
 </style>

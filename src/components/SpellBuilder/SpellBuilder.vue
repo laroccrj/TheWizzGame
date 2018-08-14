@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Spell Builder</h1>
+    <h2>Spell Builder</h2>
     <div class="spell-builder-controls">
       <div>
         <button @click="startPlayback()">Playback</button>
@@ -23,7 +23,7 @@
       <grid ref="grid"
             :rows=11
             :columns=11
-            :width=400
+            :width=gridSize
             defaultComponent="SpellBuilderSpellNode"
             :defaultOptions="{active:false, selected: false}"
             @onNodeEvent="onNodeEvent">
@@ -60,7 +60,8 @@ export default {
       currentFrame: 0,
       frameHasChanges: false,
       frames: [],
-      playingBack: false
+      playingBack: false,
+      gridSize: 651
     }
   },
   components: {
@@ -75,6 +76,9 @@ export default {
 
     // Load initial frame and display it
     this.loadFrame(0)
+
+    this.setWidth()
+    window.addEventListener('resize', this.setWidth)
   },
   methods: {
     /**
@@ -98,6 +102,10 @@ export default {
           }
         }
       }
+    },
+
+    setWidth() {
+      this.gridSize = window.innerWidth >= 640 ? 600 : window.innerWidth - 40
     },
 
     /**
@@ -424,7 +432,6 @@ export default {
 <style lang="css" scoped>
 .spell-loader-container * {
   margin: 0 auto;
-  border: 0;
   width: 100%;
   max-width: 350px;
   display: block;
@@ -434,6 +441,7 @@ export default {
   padding: 0;
   outline: 0;
   background: #f3e8e8;
+  border: 0;
 }
 .spell-loader-button {
   padding: 10px;
@@ -443,17 +451,25 @@ export default {
   background-color: green;
   color: white;
 }
+.spell-builder-controls {
+  margin: 15px;
+}
 .spell-builder-controls div {
   margin: 5px 0;
 }
+.spell-builder-controls button:disabled {
+  color: #b0b0b0;
+}
 .spell-builder-frames button {
   border-radius: 0;
+  margin: 0 1px 0 0;
 }
 .spell-builder-frames button:first-child {
   border-radius: 10px 0 0 10px;
 }
 .spell-builder-frames button:last-child {
   border-radius: 0 10px 10px 0;
+  margin: 0;
 }
 .spell-builder-frames button:only-child {
   border-radius: 10px;
