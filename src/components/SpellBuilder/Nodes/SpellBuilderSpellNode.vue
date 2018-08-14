@@ -31,4 +31,13 @@ export default {
   height: 90%;
   border-radius: 3px;
 }
+
+button {
+  background: #ff9f9f;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+button:hover {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
 </style>
