@@ -44,6 +44,7 @@ import Vue from 'vue'
 import VueClipboard from 'vue-clipboard2'
 import Grid from '@/components/Grid'
 import FrameCleaner from '@/Domain/Frame/FrameCleaner'
+import Utils from '@/Domain/Utils'
 
 Vue.use(VueClipboard)
 
@@ -204,7 +205,7 @@ export default {
      */
     saveFrame(frameId) {
       // Deep copy frames into a temp variable so we can rollback save if need be
-      let tempFrames = JSON.parse(JSON.stringify(this.frames))
+      let tempFrames = Utils.deepCopy(this.frames)
       var frame = this.getFrameFromGrid()
 
       if (frameId == -1) {
@@ -217,7 +218,7 @@ export default {
       if (frameId < this.frames.length) {
         let cleanFrom = frameId == 0 ? frameId : frameId - 1 // Want to clean from the previous frame unless we are at the first frame
         let spliceFrom = frameId == 0 ? 1 : frameId // Don't splice the first frame
-        let cleanCheckFrames = JSON.parse(JSON.stringify(tempFrames)) // Deep copy again so we can tell if changes were made from cleaning
+        let cleanCheckFrames = Utils.deepCopy(tempFrames) // Deep copy again so we can tell if changes were made from cleaning
 
         var framesToClean = cleanCheckFrames.splice(spliceFrom)
         var cleanFrames = FrameCleaner.cleanFrames(cleanCheckFrames[cleanFrom], framesToClean)

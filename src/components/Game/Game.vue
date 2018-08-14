@@ -29,6 +29,7 @@
 <script>
 import Grid from '@/components/Grid'
 import GameController from '@/Domain/Game/GameController'
+import Utils from '@/Domain/Utils'
 
 export default {
   name: 'Game',
@@ -54,8 +55,7 @@ export default {
 			this.gameController.movePlayerForward()
 		},
 		castSpell(originalFrames) {
-		  // Make deep copy of the frames
-      let frames = JSON.parse(JSON.stringify(originalFrames))
+      let frames = Utils.deepCopy(originalFrames)
 			this.gameController.castSpell(frames)
 		},
 	},
