@@ -5,7 +5,8 @@ export default class Player {
   static get FACING_LEFT() { return 'left' }
   static get FACING_RIGHT() { return 'right' }
 
-  constructor(posX, posY, facing) {
+  constructor(displayName, posX, posY, facing) {
+    this.displayName = displayName
     this.posX = posX
     this.posY = posY
     this.facing = facing

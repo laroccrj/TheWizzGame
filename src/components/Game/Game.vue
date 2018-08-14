@@ -3,6 +3,7 @@
 		<div>
 			<h1>Game Time</h1>
 		</div>
+		<div><h2>{{ displayName }}'s turn</h2></div>
 		<div>
 			<button @click="castSpell(spell)">Cast Spell</button>
 		</div>
@@ -35,7 +36,8 @@ export default {
   name: 'Game',
 	data() {
 		return {
-			spell: [[{ x: 0, y: -1 }], [{ x: 0, y: -2 }], [{ x: 0, y: -3 }], [{ x: 0, y: -4 }]]
+			spell: [[{ x: 0, y: -1 }], [{ x: 0, y: -2 }], [{ x: 0, y: -3 }], [{ x: 0, y: -4 }]],
+			displayName : ''
 		}
 	},
 	components: {
@@ -43,21 +45,29 @@ export default {
 	},
 	mounted: function() {
     this.gameController = new GameController(this.$refs.grid)
+    this.updateScene()
 	},
 	methods: {
 		rotateRight() {
 			this.gameController.rotateRight()
+      this.updateScene()
 		},
 		rotateLeft() {
 			this.gameController.rotateLeft()
+      this.updateScene()
 		},
 		moveForward() {
 			this.gameController.movePlayerForward()
+      this.updateScene()
 		},
 		castSpell(originalFrames) {
       let frames = Utils.deepCopy(originalFrames)
 			this.gameController.castSpell(frames)
+			this.updateScene()
 		},
+    updateScene() {
+		  this.displayName = this.gameController.currentPlayer.displayName
+		}
 	},
 	computed: {
 		spellJSON: {

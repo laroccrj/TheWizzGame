@@ -5,17 +5,21 @@ export default class GameController {
   constructor(grid) {
     this.grid = grid
     this.players = [
-      new Player(0,0, Player.FACING_DOWN),
-      new Player(10,10, Player.FACING_UP)
+      new Player('Player 1', 0,0, Player.FACING_DOWN),
+      new Player('Player 2', 10,10, Player.FACING_UP)
     ];
     this.spellInstances = []
-    this.currentPlayer = 0
+    this.currentPlayerId = 0
     this.drawPlayers()
   }
 
+  get currentPlayer() {
+    return this.players[this.currentPlayerId]
+  }
+
   nextTurn() {
-    this.currentPlayer++
-    if(this.currentPlayer >= this.players.length) this.currentPlayer = 0
+    this.currentPlayerId++
+    if(this.currentPlayerId >= this.players.length) this.currentPlayerId = 0
     this.drawGame()
   }
 
@@ -71,7 +75,7 @@ export default class GameController {
   }
 
   movePlayerForward() {
-    let player = this.players[this.currentPlayer]
+    let player = this.players[this.currentPlayerId]
 
     switch (player.facing) {
       case Player.FACING_LEFT:
@@ -92,7 +96,7 @@ export default class GameController {
   }
 
   movePlayer(changeX, changeY) {
-    let player = this.players[this.currentPlayer]
+    let player = this.players[this.currentPlayerId]
 
     let newX = player.posX + changeX
     let newY = player.posY + changeY
@@ -104,19 +108,19 @@ export default class GameController {
   }
 
   rotateRight() {
-    let player = this.players[this.currentPlayer]
+    let player = this.players[this.currentPlayerId]
     player.rotateRight()
     this.nextTurn()
   }
 
   rotateLeft() {
-    let player = this.players[this.currentPlayer]
+    let player = this.players[this.currentPlayerId]
     player.rotateLeft()
     this.nextTurn()
   }
 
   castSpell(frames) {
-    let player = this.players[this.currentPlayer]
+    let player = this.players[this.currentPlayerId]
 
     let spellInstance = new SpellInstance(
       player.facing,
