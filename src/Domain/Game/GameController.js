@@ -35,7 +35,8 @@ export default class GameController {
       let player = this.players[i]
       this.grid.setGridValue(player.posX, player.posY, {
         component: 'GamePlayerNode',
-        facing: player.facing
+        facing: player.facing,
+        selected: i == this.currentPlayerId
       })
     }
   }
