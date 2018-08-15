@@ -10,4 +10,8 @@ export default class Utils {
 
     return arr
   }
+
+  static deepCopy(val) {
+    return JSON.parse(JSON.stringify(val))
+  }
 }
