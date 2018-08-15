@@ -41,9 +41,9 @@ export default class SpellInstance {
             break
         }
 
-        spellNode.x = x;
-        spellNode.y = y;
-        frame[n] = spellNode;
+        spellNode.x = x
+        spellNode.y = y
+        frame[n] = spellNode
       }
 
       this.frames[i] = frame

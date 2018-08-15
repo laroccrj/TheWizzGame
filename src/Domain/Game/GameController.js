@@ -5,9 +5,9 @@ export default class GameController {
   constructor(grid) {
     this.grid = grid
     this.players = [
-      new Player(0, 'Player 1', 0,0, Player.FACING_DOWN),
-      new Player(1, 'Player 2', 10,10, Player.FACING_UP)
-    ];
+      new Player(0, 'Player 1', 0, 0, Player.FACING_DOWN),
+      new Player(1, 'Player 2', 10, 10, Player.FACING_UP)
+    ]
     this.spellInstances = []
     this.currentPlayerId = 0
     this.drawGame()
@@ -19,7 +19,7 @@ export default class GameController {
 
   nextTurn() {
     this.currentPlayerId++
-    if(this.currentPlayerId >= this.players.length) this.currentPlayerId = 0
+    if (this.currentPlayerId >= this.players.length) this.currentPlayerId = 0
     this.drawGame()
   }
 
@@ -33,12 +33,10 @@ export default class GameController {
     let i = this.players.length
     while (i--) {
       let player = this.players[i]
-      this.grid.setGridValue(player.posX, player.posY,
-        {
-          component: 'GamePlayerNode',
-          facing: player.facing
-        }
-      )
+      this.grid.setGridValue(player.posX, player.posY, {
+        component: 'GamePlayerNode',
+        facing: player.facing
+      })
     }
   }
 
@@ -57,13 +55,13 @@ export default class GameController {
         // Check if it hits a player
         let playerId = this.players.length
         let playerHit = false
-        while(playerId--) {
+        while (playerId--) {
           let player = this.players[playerId]
-          if(player.posX === spellNode.x && player.posY === spellNode.y) playerHit = playerHit.id
+          if (player.posX === spellNode.x && player.posY === spellNode.y) playerHit = playerHit.id
         }
 
-        if(playerHit !== false) {
-          if(player.id !== spell.player.id) {
+        if (playerHit !== false) {
+          if (player.id !== spell.player.id) {
             let victor = this.players[spell.player.id]
             alert(victor.displayName + ' Wins!')
           }

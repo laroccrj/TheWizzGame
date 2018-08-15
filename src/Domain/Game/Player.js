@@ -1,9 +1,16 @@
 export default class Player {
-
-  static get FACING_DOWN() { return 'down' }
-  static get FACING_UP() { return 'up' }
-  static get FACING_LEFT() { return 'left' }
-  static get FACING_RIGHT() { return 'right' }
+  static get FACING_DOWN() {
+    return 'down'
+  }
+  static get FACING_UP() {
+    return 'up'
+  }
+  static get FACING_LEFT() {
+    return 'left'
+  }
+  static get FACING_RIGHT() {
+    return 'right'
+  }
 
   constructor(id, displayName, posX, posY, facing) {
     this.id = id
