@@ -1,55 +1,60 @@
 <template>
-  <div :class="getFaceingClass()"></div>
+  <div :class="{faceUp: facingUp,
+  							faceDown: facingDown,
+  							faceLeft: facingLeft,
+  							faceRight: facingRight,
+  							selected: options.selected}">
+  		
+	</div>
 </template>
 
 <script>
 import NodeComponent from '@/components/NodeComponent'
+import Player from '@/Domain/Game/Player'
 
 export default {
-  extends: NodeComponent,
-  name: 'GamePlayerNode',
-  data() {
-    return {}
-  },
-  methods: {
-    getFaceingClass() {
-      switch (this.options.facing) {
-        case 'up':
-          return 'face-up'
-          break
-        case 'right':
-          return 'face-right'
-          break
-        case 'left':
-          return 'face-left'
-          break
-        default:
-          return 'face-down'
-          break
-      }
-      return 'face-left'
-    }
-  }
+	extends: NodeComponent,
+	name: 'GamePlayerNode',
+	data() {
+		return {}
+	},
+	computed: {
+		facingUp: function() {
+			return this.options.facing == Player.FACING_UP
+		},
+		facingDown: function() {
+			return this.options.facing == Player.FACING_DOWN
+		},
+		facingLeft: function() {
+			return this.options.facing == Player.FACING_LEFT
+		},
+		facingRight: function() {
+			return this.options.facing == Player.FACING_RIGHT
+		}
+	}
 }
 </script>
 
 <style scoped>
 div {
-  width: 100%;
-  height: 100%;
-  background-image: url('/static/wiz.png');
-  background-size: 100%;
+	width: 100%;
+	height: 100%;
+	background-image: url('/static/wiz.png');
+	background-size: 100%;
 }
-.face-left {
-  transform: rotate(90deg);
+.selected {
+	border: 1px solid red;
 }
-.face-up {
-  transform: rotate(180deg);
+.faceLeft {
+	transform: rotate(90deg);
 }
-.face-right {
-  transform: rotate(270deg);
+.faceUp {
+	transform: rotate(180deg);
 }
-.face-down {
-  transform: rotate(0deg);
+.faceRight {
+	transform: rotate(270deg);
+}
+.faceDown {
+	transform: rotate(0deg);
 }
 </style>
