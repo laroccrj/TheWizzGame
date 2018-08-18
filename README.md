@@ -1,4 +1,4 @@
-# vueapp01
+# Wizzards
 
 > A Vue.js project
 
@@ -8,8 +8,11 @@
 # install dependencies
 npm install
 
-# serve with hot reload at localhost:8080
-npm run dev
+# serve client with hot reload at localhost:8080
+npm run dev-client
+
+# start server (WIP - No build or hot reload available)
+npm run dev-server
 
 # build for production with minification
 npm run build
