@@ -36,6 +36,9 @@
 import Grid from '@/components/Grid'
 import GameController from '@/Domain/Game/GameController'
 import Utils from '@/Domain/Utils'
+import Vue from 'vue'
+import VueSocketio from 'vue-socket.io';
+Vue.use(VueSocketio, 'http://localhost:3000');
 
 export default {
   name: 'Game',
@@ -62,6 +65,7 @@ export default {
       this.updateScene()
     },
     moveForward() {
+      this.$socket.emit('move_forward', '');
       this.gameController.movePlayerForward()
       this.updateScene()
     },
