@@ -13,9 +13,6 @@
       <div><button class="push--flat" @click='rotateLeft'>↪</button></div>
       <div><button class="push--flat" @click="castSpell(spell)">🔥</button></div>
       <div><button class="push--flat" @click='rotateRight'>↩</button></div>
-      <div>&nbsp;</div>
-      <div><button class="push--flat" @click='moveForward'>⬇</button></div>
-      <div>&nbsp;</div>
     </div>
     <div>
       <grid ref="grid"
@@ -95,7 +92,7 @@ export default {
 .game-control-pad {
   display: grid;
   grid-template-columns: repeat(3, 90px);
-  grid-template-rows: repeat(4, 90px);
+  grid-template-rows: repeat(3, 90px);
   margin: 20px auto;
   width: 280px;
   border: 5px solid #3f000b;
