@@ -42,7 +42,9 @@ var http = require('http').Server(app)
 var io = require('socket.io')(http)
 
 // Commmented out for now - we'll have to figure something out in order to reuse code
-// var GameController = require('../client/Domain/Game/GameController')
+// var GameController = require('#/Domain/Game/GameController')
+var test = require('#/test-delete-me')
+console.log(`${test.test()} should return 9001`)
 
 io.on('connection', function(socket) {
   console.log('a user connected')

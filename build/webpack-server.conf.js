@@ -18,14 +18,11 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.json'],
     alias: {
-      '@': resolve('src/server')
+      '@': resolve('src/server'),
+      '#': resolve('src/shared')
     }
   },
-  externals: [
-    nodeExternals({
-      modulesFromFile: true
-    })
-  ],
+  externals: [nodeExternals()],
   module: {
     loaders: [
       {
