@@ -37,23 +37,25 @@ wss.on('connection', ws => {
 })
 */
 
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var GameController = require('../client/Domain/Game/GameController')
+var app = require('express')()
+var http = require('http').Server(app)
+var io = require('socket.io')(http)
 
-io.on('connection', function(socket){
-  console.log('a user connected');
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
-  });
-  socket.on('move_forward', function(){
-    console.log('move forward');
-  });
-});
+// Commmented out for now - we'll have to figure something out in order to reuse code
+// var GameController = require('../client/Domain/Game/GameController')
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
-});
+io.on('connection', function(socket) {
+  console.log('a user connected')
+  socket.on('disconnect', function() {
+    console.log('user disconnected')
+  })
+  socket.on('move_forward', function() {
+    console.log('move forward')
+  })
+})
+
+http.listen(3000, function() {
+  console.log('listening on *:3000')
+})
 
 //console.log('Server running on port 2345')
