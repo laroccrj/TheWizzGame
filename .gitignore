@@ -12,3 +12,5 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+
+server-compiled.js
